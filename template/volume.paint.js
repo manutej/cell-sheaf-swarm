@@ -13,18 +13,18 @@ var CAM = {
   harmonic: [0.95, 0.44], trunk: [0.7, 0.38], subspaces: [0.48, 0.58],
 };
 var BLURB = {
-  pillars: "Mesh only. Swipe up for restriction maps. Copy this chrome; swap the sheaf.",
-  rho: "Entity → relation. Silver disc is F(r). Color of the curve is glue, not taste.",
-  strata: "Kind becomes height. Hierarchy ρ only.",
-  harmonic: "Green B stays. Wine U receives a section only on green ρ.",
-  trunk: "Only consistent ρ is thick. That is the legal commit path. Gold is earned.",
-  subspaces: "Type discs above. Artifacts drop onto lower sheaf nodes. lives-at is ρ.",
+  pillars: "What exists. Height is how much the folder holds.",
+  rho: "What restricts. Heavy curves are the ones that do not commute.",
+  strata: "What stacks. Kind becomes height.",
+  harmonic: "What is already known, and what is still dark.",
+  trunk: "What may fold. Only a consistent map is thick. Gold is earned.",
+  subspaces: "What type lives on which folder.",
 };
 var UP = ["README", "BRIEF", "HANDOFF"];
 var DN = ["ci", "hook", "release"];
 
 var root = document.documentElement;
-var BASE = root.dataset.base || "./" ;
+var BASE = root.dataset.base || "./";
 var CONTRACTS = root.dataset.contracts || `${BASE}contracts/`;
 
 var graph = null;
@@ -67,10 +67,11 @@ function q(a, c, b, t) {
   return { x: u * u * a.x + 2 * u * t * c.x + t * t * b.x, y: u * u * a.y + 2 * u * t * c.y + t * t * b.y, z: u * u * a.z + 2 * u * t * c.z + t * t * b.z };
 }
 function showRho(e) {
-  if (view === "pillars") return false;
-  if (view === "rho" || view === "strata" || view === "harmonic") return e.role === "core";
-  if (view === "trunk") return e.role === "core" && e.st === "ok";
+  if (e.role === "fan") return true;
   if (view === "subspaces") return e.role === "drop" || e.role === "type" || e.role === "holds";
+  if (view === "trunk") return e.role === "core" && e.st === "ok";
+  if (view === "pillars") return e.role === "core" && e.st !== "ok";
+  if (view === "rho" || view === "strata" || view === "harmonic") return e.role === "core";
   return true;
 }
 
@@ -193,8 +194,28 @@ function paint() {
   g.addColorStop(0.6, hex(C.paper, 0));
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, W, H);
+  const keep = (function () {
+    if (!pin) return null;
+    if (pin.k === "edge") return { nodes: new Set([pin.e.s, pin.e.t]), edge: pin.e.id };
+    const nodes = new Set([pin.n.id]);
+    let edge = null;
+    for (const e of L.edges) {
+      if (e.s === pin.n.id || e.t === pin.n.id || e.a.id === pin.n.id || e.b.id === pin.n.id) {
+        nodes.add(e.s || e.a.id);
+        nodes.add(e.t || e.b.id);
+      }
+    }
+    return { nodes, edge };
+  })();
+  const rank = { broken: 0, missing: 1, strange: 2, ok: 3 };
+  const word = (s) => (s === "broken" ? "won't fold" : s === "missing" ? "no map" : s === "strange" ? "needs a person" : "");
+  const labeled = [];
   L.edges.forEach((e) => {
     if (!showRho(e) && e.role !== "fan") return;
+    const idA = e.s || e.a.id;
+    const idB = e.t || e.b.id;
+    const on = !keep || keep.nodes.has(idA) || keep.nodes.has(idB);
+    const hot = e.st !== "ok";
     const a = project({ x: e.a.x, y: e.a.y + e.a.h * 0.45, z: e.a.z });
     const b = project({ x: e.b.x, y: e.b.y + e.b.h * 0.45, z: e.b.z });
     const c = project(e.ctrl);
@@ -202,19 +223,24 @@ function paint() {
     ctx.moveTo(a.x, a.y);
     ctx.quadraticCurveTo(c.x, c.y, b.x, b.y);
     ctx.strokeStyle = SC[e.st] || C.ink;
-    ctx.globalAlpha = view === "trunk" && e.st === "ok" ? 0.9 : 0.52;
-    ctx.lineWidth = view === "trunk" && e.st === "ok" ? 2.4 : e.role === "drop" ? 1.4 : 1.15;
+    ctx.globalAlpha = !on ? 0.06 : view === "trunk" && e.st === "ok" ? 0.92 : hot ? 0.9 : 0.2;
+    ctx.lineWidth = !on ? 1 : view === "trunk" && e.st === "ok" ? 2.6 : hot ? 2.3 : 1.05;
     ctx.setLineDash(e.st === "missing" ? [4, 5] : e.st === "strange" ? [8, 4] : []);
     ctx.stroke();
     ctx.globalAlpha = 1;
     ctx.setLineDash([]);
-    if (view === "rho" && e.role === "core") {
-      const m = project(e.mid);
-      ctx.beginPath();
-      ctx.arc(m.x, m.y, 3, 0, Math.PI * 2);
-      ctx.fillStyle = C.silver;
-      ctx.fill();
-    }
+    if (on && (hot || (keep && keep.edge === e.id))) labeled.push(e);
+  });
+  labeled.sort((a, b) => (rank[a.st] ?? 9) - (rank[b.st] ?? 9)).slice(0, 3).forEach((e) => {
+    const m = project(e.mid);
+    const text = word(e.st) ? e.rel + " · " + word(e.st) : e.rel;
+    ctx.font = "600 11px sans-serif";
+    ctx.textAlign = "center";
+    const tw = ctx.measureText(text).width;
+    ctx.fillStyle = hex(C.paper, 0.9);
+    ctx.fillRect(m.x - tw / 2 - 5, m.y - 18, tw + 10, 15);
+    ctx.fillStyle = C.ink;
+    ctx.fillText(text, m.x, m.y - 7);
   });
   L.nodes
     .map((n) => ({ n, p: project({ x: n.x, y: n.y, z: n.z }) }))
@@ -244,6 +270,7 @@ function paint() {
         ctx.fillText(n.folder, p.x, p.y + 14);
         return;
       }
-      drawPillar(n, p, 1);
+      drawPillar(n, p, !keep || keep.nodes.has(n.id));
     });
 }
+
