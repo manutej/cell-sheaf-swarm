@@ -2,22 +2,42 @@
 
 Live swarm observatory on a cellular sheaf. Restriction color is glue. Gold is earned.
 
-This repo is the **contract + design kernel** you publish from, then roll into new sheaves without restyling from scratch.
+This repo is the **contract + design kernel** you publish from, then roll into new sheaves without restyling.
 
 Sister surface: [manutej/cell-sheaf](https://github.com/manutej/cell-sheaf) (volumetric HTML). This repo adds the **swarm clock**, typed operad prompts, and the JSON contract.
+
+OAH (Ormus Agent Harness) is **inspiration**, not a fork.
+
+## Roll a new sheaf
+
+1. Copy [`contracts/blank.sheaf.json`](contracts/blank.sheaf.json) → `contracts/<name>.sheaf.json`.
+2. Keep `"schema": "sheaf-graph/2020-12"`. Set `id` to `<name>.trunk`.
+3. Pillars are **last-folders**. Edges are ρ with `status` ∈ {ok, strange, broken, missing}.
+4. `onTrunk` is earned iff some incident ρ is `ok`.
+5. Run `node scripts/validate-sheaf.mjs`.
+6. Add the file to [`contracts/catalog.json`](contracts/catalog.json).
+
+Law: [`contracts/ROLL.md`](contracts/ROLL.md). Schema: [`contracts/sheaf-graph.schema.json`](contracts/sheaf-graph.schema.json).
+
+Worked example of a roll (not the swarm): [`contracts/paper.sheaf.json`](contracts/paper.sheaf.json).
+
+In the observatory: pick a contract, **Export** the live snapshot, or **Roll** a `*.sheaf.json`.
 
 ## Contract
 
 | file | role |
 | --- | --- |
-| `contracts/sheaf-graph.schema.json` | SheafGraph 2020-12. Pillars, ρ, commits, agents, operad, findings. |
-| `contracts/swarm.sheaf.json` | Current trunk specimen (last-folder + short SHA). |
-| `contracts/ROLL.md` | How to mint a new `*.sheaf.json` without breaking glue. |
+| `contracts/sheaf-graph.schema.json` | SheafGraph 2020-12 |
+| `contracts/catalog.json` | index of published sheaves |
+| `contracts/swarm.sheaf.json` | current trunk specimen |
+| `contracts/paper.sheaf.json` | rolled paper stalks |
+| `contracts/blank.sheaf.json` | copy template |
+| `contracts/ROLL.md` | how to mint a new sheaf without breaking glue |
 
 Glue:
 
 | status | meaning | fold into trunk? |
-| --- | --- | --- |
+| --- | --- |
 | `ok` | compose = collapse | yes |
 | `strange` | map exists, rank/sort odd | only after a person |
 | `broken` | coboundary will not vanish | no |
@@ -27,13 +47,12 @@ Glue:
 
 | file | role |
 | --- | --- |
-| `src/lib/swarm/types.ts` | Zod enums — GlueStatus, RestrictKind, AgentRole, ViewMode, OcVerdict |
-| `src/lib/swarm/specimen.ts` | Same data as `swarm.sheaf.json` |
+| `src/lib/swarm/types.ts` | Zod enums — GlueStatus, RestrictKind, AgentRole, ViewMode, SheafGraph |
+| `src/lib/swarm/load-sheaf.ts` | parse + ROLL checks |
+| `src/lib/swarm/specimen.ts` | catalog: JSON is the source of truth |
 | `src/lib/swarm/store.ts` | Clock law: idle → launch → residual on ρ → commit or block |
 | `src/components/swarm/VolumeCanvas.tsx` | Curvilinear ρ, pillars, in-flight pulses |
-| `src/components/swarm/SwarmApp.tsx` | Six modes: Swarm, Commits, Live, Operad, Eval, Subspaces |
-
-OAH (Ormus Agent Harness) is **inspiration**, not a fork. Roles here are local.
+| `src/components/swarm/SwarmApp.tsx` | Six modes + contract roll / export |
 
 ## Palette (Sanzo Wada)
 
@@ -48,11 +67,12 @@ Olive Buff paper `#c1c494`, ink `#253122`, ube `#501345`, Cossack Green `#437742
 5. **Eval** — four seats; P0 = a promise the operator cannot perform
 6. **Subspaces** — type discs, artifacts drop via lives-at
 
-## Publish
+## Validate
 
-1. Clone this repo.
-2. Treat `contracts/swarm.sheaf.json` as the source of truth for any new surface.
-3. To ship a **new sheaf**, follow `contracts/ROLL.md` — copy, retarget pillars, keep the schema.
-4. GitHub Pages / Vercel: point at the observatory app that loads `*.sheaf.json`.
+```sh
+node scripts/validate-sheaf.mjs
+```
+
+CI runs the same command on every push (`.github/workflows/sheaf.yml`).
 
 License: MIT.
