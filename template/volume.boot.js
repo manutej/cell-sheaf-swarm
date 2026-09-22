@@ -27,6 +27,40 @@ function meaning(st) {
   return "Coboundary will not go to zero. Do not fold.";
 }
 
+function lineOf(st) {
+  if (st === "broken") return "won't fold";
+  if (st === "missing") return "no map";
+  if (st === "strange") return "needs a person";
+  return "may fold";
+}
+
+function ranked() {
+  const rank = { broken: 0, missing: 1, strange: 2, ok: 3 };
+  const folder = (id) => {
+    const p = (graph.pillars || []).find((x) => x.id === id);
+    return p ? p.folder : id;
+  };
+  return (graph.restrictions || [])
+    .filter((r) => r.status !== "ok")
+    .map((r) => ({ ...r, from: folder(r.source), to: folder(r.target) }))
+    .sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9) || b.residual - a.residual);
+}
+
+function verdictText() {
+  const blocks = ranked();
+  const open = (graph.pillars || []).filter((p) =>
+    (graph.restrictions || []).some((r) => (r.source === p.id || r.target === p.id) && r.status === "ok"),
+  ).length;
+  if (!blocks.length) return "Every map commutes. " + open + " folders may fold.";
+  const lead = blocks.slice(0, 2).map((b) => {
+    if (b.status === "missing") return b.to + " has no map";
+    if (b.status === "broken") return b.from + " → " + b.to + " will not fold";
+    return b.from + " → " + b.to + " needs a person";
+  });
+  const more = blocks.length - lead.length;
+  return open + " of " + graph.pillars.length + " may fold. " + lead.join(". ") + "." + (more ? " " + more + " more." : "");
+}
+
 function panel(h) {
   const pt = document.getElementById("pt");
   const pm = document.getElementById("pm");
@@ -34,38 +68,83 @@ function panel(h) {
   const tb = document.getElementById("tb");
   const body = document.getElementById("tbody");
   if (!h) {
-    pt.textContent = view;
-    pm.textContent = "swipe ↕ · tap pillar · cap up · base down · gold is earned";
-    pa.textContent = BLURB[view];
-    tb.hidden = true;
+    const blocks = ranked();
+    pt.textContent = "Look here";
+    pm.textContent = BLURB[view];
+    pa.textContent = verdictText();
+    tb.hidden = !blocks.length;
+    body.replaceChildren();
+    blocks.slice(0, 6).forEach((r) => {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = r.from + " → " + r.to + " · " + lineOf(r.status);
+      btn.style.cssText = "border:0;background:transparent;padding:8px 0;min-height:44px;text-transform:none;letter-spacing:0;font:500 .78rem/1.3 var(--sans);text-align:left";
+      btn.onclick = () => {
+        const e = L.edges.find((x) => x.id === r.id);
+        if (!e) return;
+        pin = { k: "edge", e };
+        panel(pin);
+      };
+      const dot = document.createElement("span");
+      dot.className = "dot";
+      dot.style.background = SC[r.status];
+      td.append(dot, btn);
+      tr.append(td);
+      body.append(tr);
+    });
     return;
   }
   if (h.k === "edge") {
     const e = h.e;
-    pt.textContent = "ρ  " + e.rel;
-    pm.textContent = e.s + " → " + e.t + " · " + e.kind + " · " + e.st;
-    pa.textContent = e.meaning || meaning(e.st);
-    tb.hidden = false;
-    body.innerHTML = `<tr><td><span class="dot" style="background:${SC[e.st]}"></span>${e.st}</td><td>${e.kind}</td></tr>`;
+    pt.textContent = (e.a.folder || e.s) + " → " + (e.b.folder || e.t);
+    pm.textContent = e.rel + " · " + lineOf(e.st);
+    pa.textContent = e.meaning || lineOf(e.st);
+    tb.hidden = true;
     return;
   }
   const n = h.n;
   pt.textContent = n.folder;
-  pm.textContent = (n.role || "") + " · " + (n.kind || n.st || "") + (n.dim ? " · dim " + n.dim : "");
-  pa.textContent = h.k === "cap" ? "Tap cap for ancillary in empty space (up fan)." : h.k === "base" ? "Tap base for downstream events (down fan)." : "Restriction color is glue, not taste.";
   const rows = (graph.restrictions || []).filter((r) => r.source === n.id || r.target === n.id);
+  const worst = rows.slice().sort((a, b) => (a.status === "ok" ? 1 : 0) - (b.status === "ok" ? 1 : 0))[0];
+  pm.textContent = worst ? lineOf(worst.status) : "no maps";
+  pa.textContent = (worst && worst.residualMeaning) || (h.k === "cap" ? "Ancillary files sit above this folder." : "Downstream events sit below this folder.");
   tb.hidden = !rows.length;
-  body.innerHTML = rows.map((r) => `<tr><td><span class="dot" style="background:${SC[r.status]}"></span>${r.relation} ${r.source === n.id ? r.target : r.source}</td><td>${r.status}</td></tr>`).join("");
+  body.replaceChildren();
+  rows.forEach((r) => {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    const other = r.source === n.id ? r.target : r.source;
+    const folder = ((graph.pillars || []).find((p) => p.id === other) || {}).folder || other;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = r.relation + " " + folder + " · " + lineOf(r.status);
+    btn.style.cssText = "border:0;background:transparent;padding:8px 0;min-height:44px;text-transform:none;letter-spacing:0;font:500 .78rem/1.3 var(--sans);text-align:left";
+    btn.onclick = () => {
+      const e = L.edges.find((x) => x.id === r.id);
+      if (e) { pin = { k: "edge", e }; panel(pin); }
+    };
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    dot.style.background = SC[r.status];
+    td.append(dot, btn);
+    tr.append(td);
+    body.append(tr);
+  });
 }
 
 function stats() {
   if (!graph) return;
-  document.getElementById("sn").textContent = graph.pillars.length;
-  document.getElementById("sc").textContent = (graph.commits || []).length;
-  document.getElementById("sok").textContent = graph.restrictions.filter((r) => r.status === "ok").length;
-  document.getElementById("sbad").textContent = graph.restrictions.filter((r) => r.status !== "ok").length;
-  document.getElementById("title").textContent = graph.title || graph.id;
-  document.getElementById("kicker").textContent = graph.id + " · sheaf-graph/2020-12 · ρ is the color";
+  const blocks = ranked();
+  const open = (graph.pillars || []).filter((p) =>
+    (graph.restrictions || []).some((r) => (r.source === p.id || r.target === p.id) && r.status === "ok"),
+  ).length;
+  document.getElementById("sn").textContent = (graph.restrictions || []).length;
+  document.getElementById("sok").textContent = open;
+  document.getElementById("sbad").textContent = blocks.length;
+  document.getElementById("title").textContent = verdictText();
+  document.getElementById("kicker").textContent = graph.title || graph.id;
 }
 
 function setView(name) {
@@ -74,7 +153,7 @@ function setView(name) {
   [yaw, pitch] = CAM[name];
   document.querySelectorAll(".tabs button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === name)));
   document.querySelectorAll(".rail button").forEach((b) => b.setAttribute("aria-current", String(b.dataset.view === name)));
-  document.getElementById("chip").textContent = VIEWS.indexOf(name) + 1 + " · " + name;
+  document.getElementById("chip").textContent = ASK[name];
   L = layout();
   panel(pin);
 }
@@ -122,11 +201,12 @@ function resize() {
   ctx.setTransform(d, 0, 0, d, 0, 0);
 }
 
+const ASK = { pillars: "Exists", rho: "Restricts", strata: "Stacks", harmonic: "Known", trunk: "May fold", subspaces: "Lives" };
 VIEWS.forEach((v, i) => {
   const b = document.createElement("button");
   b.type = "button";
   b.dataset.view = v;
-  b.textContent = i + 1 + " " + v;
+  b.textContent = ASK[v];
   b.setAttribute("aria-selected", String(i === 0));
   b.onclick = () => setView(v);
   document.getElementById("tabs").appendChild(b);
