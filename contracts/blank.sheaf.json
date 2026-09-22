@@ -1,0 +1,53 @@
+{
+  "schema": "sheaf-graph/2020-12",
+  "id": "blank.trunk",
+  "title": "Blank sheaf — copy this",
+  "palette": {
+    "paper": "#c1c494",
+    "ink": "#253122",
+    "ube": "#501345",
+    "ok": "#437742",
+    "pulse": "#009465",
+    "gold": "#fdc57e",
+    "silver": "#b6bfc1",
+    "bad": "#ae5224",
+    "odd": "#c47b2b",
+    "miss": "#6d6a55"
+  },
+  "pillars": [
+    { "id": "trunk", "folder": "trunk", "kind": "core", "known": true, "dim": 4, "x": 0, "z": 0 },
+    { "id": "a", "folder": "stalk-a", "kind": "lib", "known": true, "dim": 3, "x": -80, "z": 40 },
+    { "id": "b", "folder": "stalk-b", "kind": "app", "known": false, "dim": 3, "x": 80, "z": 40 }
+  ],
+  "restrictions": [
+    { "id": "r-ta", "source": "trunk", "target": "a", "relation": "includes", "kind": "identity", "status": "ok", "residual": 0.02, "residualMeaning": "Compose of parts equals the collapsed claim. Legal trunk edge." },
+    { "id": "r-tb", "source": "trunk", "target": "b", "relation": "includes", "kind": "projection", "status": "missing", "residual": 0.5, "residualMeaning": "No restriction written. The sheaf cannot see this neighbor." }
+  ],
+  "commits": [
+    { "sha": "000001", "pillar": "trunk", "message": "open a new sheaf", "onTrunk": true, "at": 0 }
+  ],
+  "agents": [
+    { "id": "k0", "role": "kernel", "state": "idle", "livesAt": "trunk", "task": "write the first ρ", "edgeId": "r-ta", "t": 0, "ticksLeft": 0 }
+  ],
+  "operad": [
+    {
+      "id": "q0",
+      "parent": null,
+      "question": "Does compose of stalk-a and stalk-b equal collapse on trunk?",
+      "sort": "Verdict",
+      "compose": "pending",
+      "collapse": "pending",
+      "oc": "pending",
+      "prompt": "SLOT[root] sort=Verdict · inputs=ρ · rule=compose(parts) ≡ collapse(whole) · refuse if either side missing"
+    }
+  ],
+  "findings": [
+    { "id": "C2", "seat": "craft", "sev": "P1", "claim": "Gold is earned (onTrunk), not painted", "evidence": "commit.onTrunk iff some incident ρ.status=ok" }
+  ],
+  "types": [
+    { "id": "ty-sheaf", "folder": "SheafGraph", "x": 0, "z": -70 }
+  ],
+  "artifacts": [
+    { "id": "a0", "folder": "blank.sheaf.json", "type": "ty-sheaf", "maps": "trunk", "status": "ok" }
+  ]
+}
