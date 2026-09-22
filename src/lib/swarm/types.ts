@@ -41,9 +41,11 @@ export type OcVerdict = z.infer<typeof OcVerdict>;
 export const Seat = z.enum(["user", "operator", "craft", "red"]);
 export type Seat = z.infer<typeof Seat>;
 
+export const SCHEMA_ID = "sheaf-graph/2020-12" as const;
+
 export const Pillar = z.object({
-  id: z.string(),
-  folder: z.string(),
+  id: z.string().min(1),
+  folder: z.string().min(1),
   kind: z.enum(["core", "lib", "app", "mem"]),
   known: z.boolean(),
   dim: z.number().int().min(1),
@@ -53,55 +55,56 @@ export const Pillar = z.object({
 export type Pillar = z.infer<typeof Pillar>;
 
 export const Restriction = z.object({
-  id: z.string(),
-  source: z.string(),
-  target: z.string(),
-  relation: z.string(),
+  id: z.string().min(1),
+  source: z.string().min(1),
+  target: z.string().min(1),
+  relation: z.string().min(1),
   kind: RestrictKind,
   status: GlueStatus,
-  residual: z.number(),
+  residual: z.number().min(0),
+  residualMeaning: z.string().optional(),
 });
 export type Restriction = z.infer<typeof Restriction>;
 
 export const Commit = z.object({
-  sha: z.string(),
-  pillar: z.string(),
-  message: z.string(),
+  sha: z.string().min(6).max(40),
+  pillar: z.string().min(1),
+  message: z.string().min(1),
   onTrunk: z.boolean(),
-  at: z.number(),
+  at: z.number().optional(),
 });
 export type Commit = z.infer<typeof Commit>;
 
 export const Agent = z.object({
-  id: z.string(),
+  id: z.string().min(1),
   role: AgentRole,
   state: AgentState,
-  livesAt: z.string(),
-  task: z.string(),
-  edgeId: z.string().nullable(),
-  t: z.number(),
-  ticksLeft: z.number(),
+  livesAt: z.string().min(1),
+  task: z.string().min(1),
+  edgeId: z.string().nullable().optional(),
+  t: z.number().optional(),
+  ticksLeft: z.number().optional(),
 });
 export type Agent = z.infer<typeof Agent>;
 
 export const OperadNode = z.object({
-  id: z.string(),
-  parent: z.string().nullable(),
-  question: z.string(),
-  sort: z.string(),
-  compose: z.string(),
-  collapse: z.string(),
+  id: z.string().min(1),
+  parent: z.string().nullable().optional(),
+  question: z.string().min(1),
+  sort: z.string().min(1),
+  compose: z.string().optional(),
+  collapse: z.string().optional(),
   oc: OcVerdict,
-  prompt: z.string(),
+  prompt: z.string().min(1),
 });
 export type OperadNode = z.infer<typeof OperadNode>;
 
 export const Finding = z.object({
-  id: z.string(),
+  id: z.string().min(1),
   seat: Seat,
   sev: z.enum(["P0", "P1", "P2"]),
-  claim: z.string(),
-  evidence: z.string(),
+  claim: z.string().min(1),
+  evidence: z.string().min(1),
 });
 export type Finding = z.infer<typeof Finding>;
 
@@ -113,6 +116,7 @@ export const EventKind = z.enum([
   "block",
   "fix",
   "eval",
+  "roll",
 ]);
 export type EventKind = z.infer<typeof EventKind>;
 
@@ -126,18 +130,34 @@ export const SwarmEvent = z.object({
 export type SwarmEvent = z.infer<typeof SwarmEvent>;
 
 export const TypeDisc = z.object({
-  id: z.string(),
-  folder: z.string(),
+  id: z.string().min(1),
+  folder: z.string().min(1),
   x: z.number(),
   z: z.number(),
 });
 export type TypeDisc = z.infer<typeof TypeDisc>;
 
 export const Artifact = z.object({
-  id: z.string(),
-  folder: z.string(),
-  type: z.string(),
-  maps: z.string(),
+  id: z.string().min(1),
+  folder: z.string().min(1),
+  type: z.string().min(1),
+  maps: z.string().min(1),
   status: GlueStatus,
 });
 export type Artifact = z.infer<typeof Artifact>;
+
+export const SheafGraph = z.object({
+  schema: z.literal(SCHEMA_ID),
+  id: z.string().min(1),
+  title: z.string().optional(),
+  palette: z.record(z.string(), z.string()).optional(),
+  pillars: z.array(Pillar).min(1),
+  restrictions: z.array(Restriction),
+  commits: z.array(Commit).optional(),
+  agents: z.array(Agent).optional(),
+  operad: z.array(OperadNode).optional(),
+  findings: z.array(Finding).optional(),
+  types: z.array(TypeDisc).optional(),
+  artifacts: z.array(Artifact).optional(),
+});
+export type SheafGraph = z.infer<typeof SheafGraph>;
