@@ -11,14 +11,16 @@ The HTML is the thing you copy when rolling a new sheaf — not a screenshot, no
 | `volume.paint.js` | Curvilinear ρ, last-folder pillars, up/down fans, six design views. |
 | `volume.boot.js` | Contract fetch, swipe/orbit, pause-default, roll file. |
 
-Views (mode remaps which ρ family is drawn):
+The title is a verdict computed from the sheaf. Default view draws only the maps that do not commute, and names them. Ok curves recede. Gold is still earned. Do not restyle `tokens.css`.
 
-1. **pillars** — mesh only
-2. **rho** — restriction maps
-3. **strata** — kind becomes height
-4. **harmonic** — known B stays
-5. **trunk** — only `ok` ρ is thick
-6. **subspaces** — type discs, artifacts drop via lives-at
+Views (the question changes which family is drawn):
+
+1. **Exists** — folders, plus the maps that block
+2. **Restricts** — every map; legal ones recede
+3. **Stacks** — kind becomes height
+4. **Known** — boundary stays, unknown waits
+5. **May fold** — only consistent maps are thick
+6. **Lives** — type discs, artifacts drop via lives-at
 
 Pause is default. Cap = ancillary (up). Base = downstream (down). Gold is earned (`onTrunk`).
 
