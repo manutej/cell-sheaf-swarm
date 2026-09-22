@@ -1,0 +1,85 @@
+{
+  "schema": "sheaf-graph/2020-12",
+  "id": "paper.trunk",
+  "title": "Cellular sheaves — paper stalks",
+  "palette": {
+    "paper": "#c1c494",
+    "ink": "#253122",
+    "ube": "#501345",
+    "ok": "#437742",
+    "pulse": "#009465",
+    "gold": "#fdc57e",
+    "silver": "#b6bfc1",
+    "bad": "#ae5224",
+    "odd": "#c47b2b",
+    "miss": "#6d6a55",
+    "down": "#8c4c62"
+  },
+  "pillars": [
+    { "id": "paper", "folder": "paper", "kind": "core", "known": true, "dim": 5, "x": 0, "z": 0 },
+    { "id": "sections", "folder": "sections", "kind": "lib", "known": true, "dim": 4, "x": -96, "z": -8 },
+    { "id": "rho", "folder": "restriction", "kind": "lib", "known": true, "dim": 4, "x": 96, "z": -8 },
+    { "id": "delta", "folder": "coboundary", "kind": "app", "known": true, "dim": 4, "x": -58, "z": 78 },
+    { "id": "laplace", "folder": "laplacian", "kind": "app", "known": true, "dim": 3, "x": 58, "z": 78 },
+    { "id": "harmonic", "folder": "harmonic", "kind": "mem", "known": false, "dim": 3, "x": 0, "z": -88 }
+  ],
+  "restrictions": [
+    { "id": "r-ps", "source": "paper", "target": "sections", "relation": "includes", "kind": "identity", "status": "ok", "residual": 0.02, "residualMeaning": "F(U) is the stalk of sections. Legal trunk edge." },
+    { "id": "r-pr", "source": "paper", "target": "rho", "relation": "includes", "kind": "identity", "status": "ok", "residual": 0.03, "residualMeaning": "ρ_{U,V}: F(U) → F(V) is the restriction map." },
+    { "id": "r-pd", "source": "paper", "target": "delta", "relation": "gates", "kind": "projection", "status": "ok", "residual": 0.09, "residualMeaning": "δ is the coboundary; compose along a triangle." },
+    { "id": "r-pl", "source": "paper", "target": "laplace", "relation": "gates", "kind": "spectral", "status": "strange", "residual": 0.21, "residualMeaning": "Δ_F = δᵀδ. Rank of the spectrum is odd until harmonic is written." },
+    { "id": "r-sd", "source": "sections", "target": "delta", "relation": "feeds", "kind": "embed", "status": "ok", "residual": 0.08, "residualMeaning": "Sections restrict; coboundary sees the overlap." },
+    { "id": "r-rd", "source": "rho", "target": "delta", "relation": "feeds", "kind": "embed", "status": "ok", "residual": 0.07, "residualMeaning": "Restriction maps are the arrows δ sums over." },
+    { "id": "r-dl", "source": "delta", "target": "laplace", "relation": "emits", "kind": "spectral", "status": "ok", "residual": 0.11, "residualMeaning": "Laplacian is the compose of coboundary with its adjoint." },
+    { "id": "r-lh", "source": "laplace", "target": "harmonic", "relation": "remembers", "kind": "type-aware", "status": "missing", "residual": 0.5, "residualMeaning": "No harmonic extension written. Cobb–Gebhart needs this ρ." }
+  ],
+  "commits": [
+    { "sha": "c0bb01", "pillar": "paper", "message": "name the opens", "onTrunk": true, "at": 0 },
+    { "sha": "c0bb02", "pillar": "rho", "message": "curvilinear ρ", "onTrunk": true, "at": 1 },
+    { "sha": "c0bb03", "pillar": "delta", "message": "coboundary on triangles", "onTrunk": true, "at": 2 },
+    { "sha": "c0bb04", "pillar": "harmonic", "message": "extension draft", "onTrunk": false, "at": 3 }
+  ],
+  "agents": [
+    { "id": "k0", "role": "kernel", "state": "idle", "livesAt": "paper", "task": "OC: compose ≟ collapse", "edgeId": "r-pd", "t": 0, "ticksLeft": 0 },
+    { "id": "w1", "role": "worker", "state": "idle", "livesAt": "sections", "task": "JEV tree 012/128", "edgeId": "r-ps", "t": 0, "ticksLeft": 0 },
+    { "id": "w2", "role": "worker", "state": "idle", "livesAt": "rho", "task": "prove ρ commutes", "edgeId": "r-pr", "t": 0, "ticksLeft": 0 },
+    { "id": "r1", "role": "reviewer", "state": "idle", "livesAt": "delta", "task": "seat: craft — linear ρ?", "edgeId": "r-sd", "t": 0, "ticksLeft": 0 },
+    { "id": "d1", "role": "detector", "state": "idle", "livesAt": "laplace", "task": "energy ‖δs‖²", "edgeId": "r-dl", "t": 0, "ticksLeft": 0 },
+    { "id": "f1", "role": "fixer", "state": "idle", "livesAt": "harmonic", "task": "write the missing ρ", "edgeId": "r-lh", "t": 0, "ticksLeft": 0 }
+  ],
+  "operad": [
+    {
+      "id": "q0", "parent": null,
+      "question": "Does composed coboundary equal collapsed Laplacian energy?",
+      "sort": "Verdict", "compose": "pending", "collapse": "pending", "oc": "pending",
+      "prompt": "SLOT[root] sort=Verdict · inputs=ρ,δ,Δ_F · rule=compose(parts) ≡ collapse(whole) · refuse if harmonic missing"
+    },
+    {
+      "id": "q1", "parent": "q0",
+      "question": "Do restriction maps commute on every triangle?",
+      "sort": "Restriction", "compose": "ρ along paths", "collapse": "direct ρ", "oc": "agree",
+      "prompt": "SLOT[glue] sort=ρ · kinds={identity,projection,embed,spectral,type-aware} · residual ‖δ‖ · green iff commute"
+    },
+    {
+      "id": "q2", "parent": "q0",
+      "question": "Is the sheaf Laplacian Δ_F = δᵀδ?",
+      "sort": "Laplacian", "compose": "δ then δᵀ", "collapse": "Dirichlet energy", "oc": "agree",
+      "prompt": "SLOT[laplace] sort=Energy · Δ_F=δᵀδ · harmonic iff Δ_F s = 0 · refuse if δ missing"
+    }
+  ],
+  "findings": [
+    { "id": "C1", "seat": "craft", "sev": "P0", "claim": "Restrictions are curvilinear", "evidence": "quadratic ρ in world space" },
+    { "id": "C2", "seat": "craft", "sev": "P1", "claim": "Gold is earned (onTrunk), not painted", "evidence": "harmonic commit stays silver until ρ exists" },
+    { "id": "R2", "seat": "red", "sev": "P1", "claim": "Clock is a law, not RNG flight", "evidence": "ticksLeft countdown; launch from idle only" }
+  ],
+  "types": [
+    { "id": "ty-sheaf", "folder": "SheafGraph", "x": -70, "z": -40 },
+    { "id": "ty-rho", "folder": "Restriction", "x": 70, "z": -40 },
+    { "id": "ty-energy", "folder": "Energy", "x": 0, "z": 90 }
+  ],
+  "artifacts": [
+    { "id": "a0", "folder": "paper.sheaf.json", "type": "ty-sheaf", "maps": "paper", "status": "ok" },
+    { "id": "a1", "folder": "Δ_F", "type": "ty-energy", "maps": "laplace", "status": "strange" },
+    { "id": "a2", "folder": "harmonic", "type": "ty-energy", "maps": "harmonic", "status": "missing" }
+  ]
+}
