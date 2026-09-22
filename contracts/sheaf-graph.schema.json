@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/manutej/cell-sheaf-swarm/contracts/sheaf-graph.schema.json",
+  "title": "SheafGraph",
+  "description": "Cellular sheaf for a git trunk. Pillars are last-folders. Edges are restriction maps. Color is glue. Gold is earned iff rho.status = ok.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "pillars", "restrictions"],
+  "properties": {
+    "schema": { "const": "sheaf-graph/2020-12" },
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "palette": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" }
+    },
+    "pillars": { "type": "array", "items": { "$ref": "#/$defs/pillar" } },
+    "restrictions": { "type": "array", "items": { "$ref": "#/$defs/restriction" } },
+    "commits": { "type": "array", "items": { "$ref": "#/$defs/commit" } },
+    "agents": { "type": "array", "items": { "$ref": "#/$defs/agent" } },
+    "operad": { "type": "array", "items": { "$ref": "#/$defs/operadNode" } },
+    "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "types": { "type": "array", "items": { "$ref": "#/$defs/typeDisc" } },
+    "artifacts": { "type": "array", "items": { "$ref": "#/$defs/artifact" } }
+  },
+  "$defs": {
+    "glue": {
+      "type": "string",
+      "enum": ["ok", "strange", "broken", "missing"],
+      "description": "ok = compose equals collapse. strange = needs a person. broken = coboundary will not vanish. missing = no rho written."
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["identity", "projection", "embed", "spectral", "type-aware"]
+    },
+    "pillar": {
+      "type": "object",
+      "required": ["id", "folder", "kind", "known", "dim", "x", "z"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "folder": { "type": "string", "description": "Last simple folder / repo name, never a full path." },
+        "kind": { "type": "string", "enum": ["core", "lib", "app", "mem"] },
+        "known": { "type": "boolean" },
+        "dim": { "type": "integer", "minimum": 1 },
+        "x": { "type": "number" },
+        "z": { "type": "number" }
+      }
+    },
+    "restriction": {
+      "type": "object",
+      "required": ["id", "source", "target", "relation", "kind", "status", "residual"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "source": { "type": "string" },
+        "target": { "type": "string" },
+        "relation": { "type": "string" },
+        "kind": { "$ref": "#/$defs/kind" },
+        "status": { "$ref": "#/$defs/glue" },
+        "residual": { "type": "number", "minimum": 0 },
+        "residualMeaning": { "type": "string" }
+      }
+    },
+    "commit": {
+      "type": "object",
+      "required": ["sha", "pillar", "message", "onTrunk"],
+      "additionalProperties": false,
+      "properties": {
+        "sha": { "type": "string", "minLength": 6, "maxLength": 40 },
+        "pillar": { "type": "string" },
+        "message": { "type": "string" },
+        "onTrunk": { "type": "boolean" },
+        "at": { "type": "number" }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "required": ["id", "role", "state", "livesAt", "task"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "role": { "type": "string", "enum": ["planner", "worker", "reviewer", "fixer", "kernel", "detector"] },
+        "state": { "type": "string", "enum": ["idle", "inflight", "blocked", "done"] },
+        "livesAt": { "type": "string" },
+        "task": { "type": "string" },
+        "edgeId": { "type": ["string", "null"] },
+        "t": { "type": "number" },
+        "ticksLeft": { "type": "number" }
+      }
+    },
+    "operadNode": {
+      "type": "object",
+      "required": ["id", "question", "sort", "prompt", "oc"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "parent": { "type": ["string", "null"] },
+        "question": { "type": "string" },
+        "sort": { "type": "string" },
+        "compose": { "type": "string" },
+        "collapse": { "type": "string" },
+        "oc": { "type": "string", "enum": ["agree", "diverge", "pending"] },
+        "prompt": { "type": "string", "description": "Typed SLOT prompt. Must name sort, inputs, refuse condition." }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "required": ["id", "seat", "sev", "claim", "evidence"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "seat": { "type": "string", "enum": ["user", "operator", "craft", "red"] },
+        "sev": { "type": "string", "enum": ["P0", "P1", "P2"] },
+        "claim": { "type": "string" },
+        "evidence": { "type": "string" }
+      }
+    },
+    "typeDisc": {
+      "type": "object",
+      "required": ["id", "folder", "x", "z"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "folder": { "type": "string" },
+        "x": { "type": "number" },
+        "z": { "type": "number" }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["id", "folder", "type", "maps", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "folder": { "type": "string" },
+        "type": { "type": "string" },
+        "maps": { "type": "string", "description": "lives-at lower sheaf node" },
+        "status": { "$ref": "#/$defs/glue" }
+      }
+    }
+  }
+}
