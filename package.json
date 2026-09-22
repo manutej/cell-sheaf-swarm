@@ -1,0 +1,24 @@
+{
+  "name": "cell-sheaf-swarm",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "description": "Cellular sheaf contract + swarm observatory kernel. Restriction color is glue. Gold is earned.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manutej/cell-sheaf-swarm.git"
+  },
+  "scripts": {
+    "sheaf:validate": "node scripts/validate-sheaf.mjs",
+    "test": "node --test scripts/validate-sheaf.test.mjs"
+  },
+  "files": [
+    "contracts",
+    "src/lib/swarm",
+    "src/components/swarm",
+    "scripts/validate-sheaf.mjs",
+    "LICENSE",
+    "README.md"
+  ]
+}

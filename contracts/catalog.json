@@ -1,0 +1,23 @@
+{
+  "schema": "sheaf-graph/2020-12",
+  "contracts": [
+    {
+      "id": "swarm.trunk",
+      "file": "swarm.sheaf.json",
+      "title": "Cell-Sheaf Swarm — self-consistent trunk",
+      "role": "specimen"
+    },
+    {
+      "id": "paper.trunk",
+      "file": "paper.sheaf.json",
+      "title": "Cellular sheaves — paper stalks",
+      "role": "rolled"
+    },
+    {
+      "id": "blank.trunk",
+      "file": "blank.sheaf.json",
+      "title": "Blank sheaf — copy this",
+      "role": "template"
+    }
+  ]
+}
