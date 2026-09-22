@@ -3,8 +3,23 @@
 A contract is one JSON file that validates against `sheaf-graph.schema.json`.
 Do not fork the visual language. Copy the schema, swap the stalks.
 
-The observatory loads any `*.sheaf.json` that passes this file. Color, gold,
-and last-folder are **law**, not taste.
+## 0. Design template
+
+The visual law is HTML, not a screenshot.
+
+```
+template/tokens.css        Wada tokens — do not restyle
+template/volume.paint.js   curvilinear ρ, pillars, up/down fans
+template/volume.boot.js    catalog, swipe, pause-default, roll
+template/index.html        chrome; loads any *.sheaf.json
+```
+
+Copy the folder. Point it at your sheaf. Mode remaps which ρ family is drawn.
+
+Pause is default. Cap = ancillary (up). Base = downstream (down). Gold is earned.
+
+Pages entry (`index.html`) is this same template over `contracts/`.
+
 
 ## 1. Copy the template
 
@@ -39,7 +54,7 @@ Each pillar is a **last-folder**, never a full path.
 Every edge is ρ, not a “link”.
 
 | `status` | color | commit rule |
-| --- | --- |
+| --- | --- | --- |
 | `ok` | green | legal trunk |
 | `strange` | orange | needs a person |
 | `broken` | red | do not fold |
