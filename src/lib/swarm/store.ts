@@ -29,7 +29,7 @@ function pushEvent(
 
 function seedFrom(graph: SheafGraph, note: string): Pick<
   SwarmState,
-  "graph" | "agents" | "commits" | "events" | "operad" | "tick" | "jevDone" | "selected" | "sheetOpen" | "loadError"
+  "graph" | "agents" | "commits" | "events" | "operad" | "tick" | "jevDone" | "selected" | "focusEdge" | "sheetOpen" | "loadError"
 > {
   return {
     graph,
@@ -54,6 +54,7 @@ function seedFrom(graph: SheafGraph, note: string): Pick<
     tick: 0,
     jevDone: 0,
     selected: null,
+    focusEdge: null,
     sheetOpen: false,
     loadError: null,
   };
@@ -70,12 +71,14 @@ export type SwarmState = {
   events: SwarmEvent[];
   operad: OperadNode[];
   selected: string | null;
+  focusEdge: string | null;
   sheetOpen: boolean;
   loadError: string | null;
   setMode: (m: ViewMode) => void;
   stepMode: (dir: number) => void;
   togglePause: () => void;
   select: (id: string | null) => void;
+  lookAt: (edgeId: string) => void;
   setSheet: (open: boolean) => void;
   loadGraph: (raw: unknown, note?: string) => boolean;
   loadCatalog: (id: string) => boolean;
@@ -97,7 +100,16 @@ export const useSwarm = create<SwarmState>((set, get) => ({
     set({ mode: next, sheetOpen: false });
   },
   togglePause: () => set({ paused: !get().paused }),
-  select: (selected) => set({ selected, sheetOpen: !!selected }),
+  select: (selected) => set({ selected, focusEdge: null, sheetOpen: !!selected }),
+  lookAt: (edgeId) => {
+    const r = get().graph.restrictions.find((x) => x.id === edgeId);
+    if (!r) return;
+    set({
+      focusEdge: edgeId,
+      selected: r.target,
+      sheetOpen: true,
+    });
+  },
   setSheet: (sheetOpen) => set({ sheetOpen, selected: sheetOpen ? get().selected : null }),
   loadGraph: (raw, note) => {
     const parsed = tryParseSheaf(raw);
