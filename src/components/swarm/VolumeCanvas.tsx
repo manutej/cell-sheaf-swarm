@@ -116,6 +116,7 @@ export function VolumeCanvas() {
         a: { x: number; y: number; z: number; h: number };
         b: { x: number; y: number; z: number; h: number };
         ctrl: Pt;
+        mid: Pt;
         id: string;
       };
       const edges: Edge[] = [];
@@ -138,6 +139,7 @@ export function VolumeCanvas() {
           a,
           b,
           ctrl: { x: mid.x - (dz / len) * 22, y: mid.y + 16, z: mid.z + (dx / len) * 22 },
+          mid,
         });
       }
 
@@ -175,20 +177,27 @@ export function VolumeCanvas() {
             a: node,
             b: host,
             ctrl: { x: (node.x + host.x) / 2, y: 36, z: (node.z + host.z) / 2 },
+            mid: { x: (node.x + host.x) / 2, y: 36, z: (node.z + host.z) / 2 },
           });
         });
       }
 
       const sel = st.selected;
-      const keep = sel
-        ? new Set(
-            [sel, ...edges.filter((e) => e.s === sel || e.t === sel).flatMap((e) => [e.s, e.t])],
-          )
-        : null;
+      const focus = st.focusEdge ? edges.find((e) => e.id === st.focusEdge) : undefined;
+      const keep = focus
+        ? new Set([focus.s, focus.t])
+        : sel
+          ? new Set([sel, ...edges.filter((e) => e.s === sel || e.t === sel).flatMap((e) => [e.s, e.t])])
+          : null;
+      const rank: Record<GlueStatus, number> = { broken: 0, missing: 1, strange: 2, ok: 3 };
+      const word = (s: GlueStatus) =>
+        s === "broken" ? "won't fold" : s === "missing" ? "no map" : s === "strange" ? "needs a person" : "";
+      const visible: typeof edges = [];
 
       for (const e of edges) {
         if (!showRho(mode, e.role, e.st)) continue;
         const on = !keep || keep.has(e.s) || keep.has(e.t);
+        const hot = e.st !== "ok";
         const A = project({ x: e.a.x, y: e.a.y + e.a.h * 0.45, z: e.a.z });
         const B = project({ x: e.b.x, y: e.b.y + e.b.h * 0.45, z: e.b.z });
         const C = project(e.ctrl);
@@ -197,23 +206,29 @@ export function VolumeCanvas() {
         ctx.quadraticCurveTo(C.x, C.y, B.x, B.y);
         ctx.setLineDash(e.st === "missing" ? [4, 5] : e.st === "strange" ? [8, 4] : []);
         ctx.strokeStyle = COL[e.st];
-        ctx.globalAlpha = on ? (mode === "commits" && e.st === "ok" ? 0.92 : 0.55) : 0.07;
-        ctx.lineWidth = mode === "commits" && e.st === "ok" ? 2.8 : e.role === "drop" ? 1.5 : 1.55;
+        ctx.globalAlpha = !on ? 0.06 : mode === "commits" && e.st === "ok" ? 0.92 : hot ? 0.9 : 0.2;
+        ctx.lineWidth = !on ? 1 : mode === "commits" && e.st === "ok" ? 2.8 : hot ? 2.3 : 1.1;
         ctx.stroke();
         ctx.globalAlpha = 1;
         ctx.setLineDash([]);
-        if (mode === "swarm" || mode === "live") {
-          const mid = project({
-            x: (e.a.x + e.b.x) / 2,
-            y: (e.a.y + e.b.y) / 2 + 8,
-            z: (e.a.z + e.b.z) / 2,
-          });
-          ctx.beginPath();
-          ctx.arc(mid.x, mid.y, 2.6 * mid.f, 0, Math.PI * 2);
-          ctx.fillStyle = hex(SILVER, on ? 0.85 : 0.12);
-          ctx.fill();
-        }
+        if (on) visible.push(e);
       }
+      visible
+        .filter((e) => (!focus ? e.st !== "ok" : e.id === focus.id))
+        .sort((a, b) => rank[a.st] - rank[b.st])
+        .slice(0, 3)
+        .forEach((e) => {
+          if (mode === "subspaces" && e.role !== "drop") return;
+          const m = project(e.mid);
+          const text = word(e.st) ? `${e.rel} · ${word(e.st)}` : e.rel;
+          ctx.font = "600 11px sans-serif";
+          ctx.textAlign = "center";
+          const tw = ctx.measureText(text).width;
+          ctx.fillStyle = hex(PAPER, 0.9);
+          ctx.fillRect(m.x - tw / 2 - 5, m.y - 18, tw + 10, 15);
+          ctx.fillStyle = INK;
+          ctx.fillText(text, m.x, m.y - 7);
+        });
 
       const drawPillar = (n: (typeof pillars)[0], on: boolean) => {
         const bot = project({ x: n.x, y: n.y, z: n.z });
@@ -402,15 +417,29 @@ export function VolumeCanvas() {
         const px = e.clientX - r.left;
         const py = e.clientY - r.top;
         let best: string | null = null;
-        let bd = coarse ? 22 : 14;
+        let edgeHit: string | null = null;
+        let bd = coarse ? 22 : 16;
         const st = useSwarm.getState();
         const PILLARS = st.graph.pillars;
+        for (const r of st.graph.restrictions) {
+          const a = PILLARS.find((p) => p.id === r.source);
+          const b = PILLARS.find((p) => p.id === r.target);
+          if (!a || !b) continue;
+          const mid = project({ x: (a.x + b.x) / 2, y: 16, z: (a.z + b.z) / 2 });
+          const d = Math.hypot(mid.x - px, mid.y - py);
+          if (d < bd) {
+            bd = d;
+            edgeHit = r.id;
+            best = null;
+          }
+        }
         for (const p of PILLARS) {
           const proj = project({ x: p.x, y: 0, z: p.z });
           const d = Math.hypot(proj.x - px, proj.y - py);
           if (d < bd) {
             bd = d;
             best = p.id;
+            edgeHit = null;
           }
         }
         for (const a of st.agents) {
@@ -423,7 +452,8 @@ export function VolumeCanvas() {
             best = a.id;
           }
         }
-        useSwarm.getState().select(best);
+        if (edgeHit) useSwarm.getState().lookAt(edgeHit);
+        else useSwarm.getState().select(best);
       }
       drag.current = false;
       gesture.current = "none";
