@@ -1,0 +1,89 @@
+{
+  "schema": "sheaf-graph/2020-12",
+  "id": "swarm.trunk",
+  "title": "Cell-Sheaf Swarm — self-consistent trunk",
+  "palette": {
+    "paper": "#c1c494", "ink": "#253122", "ube": "#501345", "ok": "#437742",
+    "pulse": "#009465", "gold": "#fdc57e", "mauve": "#9a72aa", "silver": "#b6bfc1",
+    "bad": "#ae5224", "odd": "#c47b2b", "miss": "#6d6a55", "down": "#8c4c62"
+  },
+  "pillars": [
+    { "id": "trunk", "folder": "trunk", "kind": "core", "known": true, "dim": 5, "x": 0, "z": 0 },
+    { "id": "ingest", "folder": "sheaf-ingest", "kind": "lib", "known": true, "dim": 4, "x": -96, "z": -8 },
+    { "id": "enhance", "folder": "sheaf-enhance", "kind": "lib", "known": true, "dim": 4, "x": 96, "z": -8 },
+    { "id": "orchestr", "folder": "orchestrator", "kind": "app", "known": true, "dim": 4, "x": -58, "z": 78 },
+    { "id": "eval", "folder": "multi-agent-eval", "kind": "app", "known": true, "dim": 3, "x": 58, "z": 78 },
+    { "id": "ops", "folder": "lattice-ops", "kind": "app", "known": false, "dim": 3, "x": 0, "z": -88 },
+    { "id": "wiki", "folder": "noether-wiki", "kind": "mem", "known": false, "dim": 3, "x": -120, "z": 70 }
+  ],
+  "restrictions": [
+    { "id": "r-ti", "source": "trunk", "target": "ingest", "relation": "includes", "kind": "identity", "status": "ok", "residual": 0.03, "residualMeaning": "Compose of parts equals the collapsed claim. Legal trunk edge." },
+    { "id": "r-te", "source": "trunk", "target": "enhance", "relation": "includes", "kind": "identity", "status": "ok", "residual": 0.04, "residualMeaning": "Compose of parts equals the collapsed claim. Legal trunk edge." },
+    { "id": "r-to", "source": "trunk", "target": "orchestr", "relation": "includes", "kind": "projection", "status": "ok", "residual": 0.08, "residualMeaning": "Compose of parts equals the collapsed claim. Legal trunk edge." },
+    { "id": "r-tv", "source": "trunk", "target": "eval", "relation": "gates", "kind": "projection", "status": "ok", "residual": 0.07, "residualMeaning": "Compose of parts equals the collapsed claim. Legal trunk edge." },
+    { "id": "r-io", "source": "ingest", "target": "orchestr", "relation": "feeds", "kind": "embed", "status": "strange", "residual": 0.22, "residualMeaning": "Map exists but rank or sort is odd. Needs a person before it can be trunk." },
+    { "id": "r-eo", "source": "enhance", "target": "orchestr", "relation": "feeds", "kind": "embed", "status": "ok", "residual": 0.11, "residualMeaning": "Compose of parts equals the collapsed claim. Legal trunk edge." },
+    { "id": "r-ve", "source": "eval", "target": "enhance", "relation": "audits", "kind": "spectral", "status": "strange", "residual": 0.27, "residualMeaning": "Map exists but rank or sort is odd. Needs a person before it can be trunk." },
+    { "id": "r-op", "source": "orchestr", "target": "ops", "relation": "emits", "kind": "type-aware", "status": "broken", "residual": 0.44, "residualMeaning": "Coboundary will not go to zero. Do not commit this fold." },
+    { "id": "r-tw", "source": "trunk", "target": "wiki", "relation": "remembers", "kind": "projection", "status": "missing", "residual": 0.5, "residualMeaning": "No restriction written. The sheaf cannot see this neighbor." },
+    { "id": "r-iw", "source": "ingest", "target": "wiki", "relation": "indexes", "kind": "spectral", "status": "strange", "residual": 0.31, "residualMeaning": "Map exists but rank or sort is odd. Needs a person before it can be trunk." }
+  ],
+  "commits": [
+    { "sha": "a1c3e7", "pillar": "trunk", "message": "lock energy gate", "onTrunk": true, "at": 0 },
+    { "sha": "b40f21", "pillar": "trunk", "message": "operad compose = collapse", "onTrunk": true, "at": 1 },
+    { "sha": "c88aa0", "pillar": "trunk", "message": "restriction status enum", "onTrunk": true, "at": 2 },
+    { "sha": "11aa02", "pillar": "ingest", "message": "schema 2020-12", "onTrunk": true, "at": 3 },
+    { "sha": "22bb13", "pillar": "ingest", "message": "from-code cap 88", "onTrunk": false, "at": 4 },
+    { "sha": "44d1e0", "pillar": "enhance", "message": "residual scale", "onTrunk": true, "at": 5 },
+    { "sha": "77b012", "pillar": "orchestr", "message": "hover stalks", "onTrunk": true, "at": 6 },
+    { "sha": "88c123", "pillar": "orchestr", "message": "curvilinear rho", "onTrunk": true, "at": 7 },
+    { "sha": "99d234", "pillar": "eval", "message": "seat findings only", "onTrunk": true, "at": 8 },
+    { "sha": "bbf456", "pillar": "ops", "message": "lattice dashboard", "onTrunk": false, "at": 9 },
+    { "sha": "dd1789", "pillar": "wiki", "message": "wiki merge law", "onTrunk": false, "at": 10 }
+  ],
+  "agents": [
+    { "id": "k0", "role": "kernel", "state": "idle", "livesAt": "trunk", "task": "OC: compose = collapse", "edgeId": "r-to", "t": 0, "ticksLeft": 0 },
+    { "id": "p1", "role": "planner", "state": "idle", "livesAt": "orchestr", "task": "slot the swarm budget", "edgeId": "r-eo", "t": 0, "ticksLeft": 0 },
+    { "id": "w1", "role": "worker", "state": "idle", "livesAt": "ingest", "task": "JEV tree 041/128", "edgeId": "r-ti", "t": 0, "ticksLeft": 0 },
+    { "id": "w2", "role": "worker", "state": "idle", "livesAt": "enhance", "task": "GNOCIS cluster sort", "edgeId": "r-te", "t": 0, "ticksLeft": 0 },
+    { "id": "r1", "role": "reviewer", "state": "idle", "livesAt": "eval", "task": "seat: craft", "edgeId": "r-tv", "t": 0, "ticksLeft": 0 },
+    { "id": "r2", "role": "reviewer", "state": "idle", "livesAt": "eval", "task": "seat: red", "edgeId": "r-ve", "t": 0, "ticksLeft": 0 },
+    { "id": "f1", "role": "fixer", "state": "idle", "livesAt": "orchestr", "task": "prove repair by run", "edgeId": "r-io", "t": 0, "ticksLeft": 0 },
+    { "id": "d1", "role": "detector", "state": "idle", "livesAt": "trunk", "task": "law: no shared mutable", "edgeId": "r-tw", "t": 0, "ticksLeft": 0 },
+    { "id": "w3", "role": "worker", "state": "idle", "livesAt": "ops", "task": "emit draft, do not send", "edgeId": "r-op", "t": 0, "ticksLeft": 0 },
+    { "id": "p2", "role": "planner", "state": "idle", "livesAt": "wiki", "task": "fold session warm", "edgeId": "r-iw", "t": 0, "ticksLeft": 0 }
+  ],
+  "operad": [
+    { "id": "q0", "parent": null, "question": "Does composed swarm verdict equal collapsed trunk verdict?", "sort": "Verdict", "compose": "pending", "collapse": "pending", "oc": "pending", "prompt": "SLOT[root] sort=Verdict · inputs=JEV,GNOCIS,Glue · rule=compose(parts) ≡ collapse(whole) · refuse if either side missing" },
+    { "id": "q1", "parent": "q0", "question": "Do 128 JEV trees agree on the kernel?", "sort": "JEV", "compose": "128 partial collapses", "collapse": "one kernel vector", "oc": "agree", "prompt": "SLOT[jev] sort=Battery · n in [100,200] · evaluate_battery → Verdict · no shared mut" },
+    { "id": "q2", "parent": "q0", "question": "Do like-sorts attract under GNOCIS?", "sort": "GNOCIS", "compose": "affinity clusters", "collapse": "one type partition", "oc": "agree", "prompt": "SLOT[gnocis] sort=Affinity · like	o like · coercion gated · refuse mixed sorts on one edge" },
+    { "id": "q3", "parent": "q0", "question": "Do restriction maps commute on every triangle?", "sort": "Restriction", "compose": "rho along paths", "collapse": "direct rho", "oc": "diverge", "prompt": "SLOT[glue] sort=rho · residual · green iff commute" },
+    { "id": "q4", "parent": "q3", "question": "May this SHA fold into trunk?", "sort": "Commit", "compose": "side-branch section", "collapse": "trunk section", "oc": "pending", "prompt": "SLOT[commit] last-folder + short SHA · gold only if rho.status=ok" },
+    { "id": "q5", "parent": "q0", "question": "Do four adversarial seats agree on the P0?", "sort": "Eval", "compose": "seat findings", "collapse": "kernel of findings", "oc": "agree", "prompt": "SLOT[eval] seats={user,operator,craft,red} · evidence from the artifact · P0 = operator cannot perform a promise" }
+  ],
+  "findings": [
+    { "id": "U1", "seat": "user", "sev": "P0", "claim": "Mode must remap rho, not costume the chip", "evidence": "showRho(mode) filters the drawn family" },
+    { "id": "U2", "seat": "user", "sev": "P0", "claim": "Live agents must be visible in flight", "evidence": "Agent.t walks the restriction bezier" },
+    { "id": "O1", "seat": "operator", "sev": "P1", "claim": "Swipe cycles modes; drag orbits", "evidence": "gesture lock after 18px" },
+    { "id": "C1", "seat": "craft", "sev": "P0", "claim": "Restrictions are curvilinear", "evidence": "quadratic rho in world space" },
+    { "id": "C2", "seat": "craft", "sev": "P1", "claim": "Gold is earned (onTrunk), not painted", "evidence": "commit.onTrunk iff rho.status=ok" },
+    { "id": "R1", "seat": "red", "sev": "P0", "claim": "OAH is inspiration, not a fork", "evidence": "roles are local; no ormus import" },
+    { "id": "R2", "seat": "red", "sev": "P1", "claim": "Clock is a law, not RNG flight", "evidence": "ticksLeft countdown; launch from idle only" }
+  ],
+  "types": [
+    { "id": "ty-sheaf", "folder": "SheafGraph", "x": -70, "z": -40 },
+    { "id": "ty-rho", "folder": "Restriction", "x": 70, "z": -40 },
+    { "id": "ty-skill", "folder": "Skill", "x": -110, "z": 50 },
+    { "id": "ty-surf", "folder": "Surface", "x": 0, "z": 90 },
+    { "id": "ty-verdict", "folder": "Verdict", "x": 110, "z": 50 },
+    { "id": "ty-commit", "folder": "Commit", "x": 0, "z": -95 }
+  ],
+  "artifacts": [
+    { "id": "a0", "folder": "trunk-sheaf.json", "type": "ty-sheaf", "maps": "trunk", "status": "ok" },
+    { "id": "a1", "folder": "sheaf-volume", "type": "ty-surf", "maps": "orchestr", "status": "ok" },
+    { "id": "a2", "folder": "DESIGN-EVAL", "type": "ty-verdict", "maps": "eval", "status": "ok" },
+    { "id": "a3", "folder": "pre-commit rho", "type": "ty-commit", "maps": "trunk", "status": "missing" },
+    { "id": "a4", "folder": "lattice dash", "type": "ty-surf", "maps": "ops", "status": "broken" },
+    { "id": "a5", "folder": "HANDOFF", "type": "ty-skill", "maps": "enhance", "status": "ok" }
+  ]
+}
