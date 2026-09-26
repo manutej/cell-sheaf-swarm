@@ -34,31 +34,93 @@ function lineOf(st) {
   return "may fold";
 }
 
-function ranked() {
+function folderName(id) {
+  const p = (graph.pillars || []).find((x) => x.id === id);
+  return p ? p.folder : id;
+}
+
+function openIds(flipId) {
+  const open = {};
+  if (!graph) return open;
+  (graph.pillars || []).forEach((p) => {
+    const hit = (graph.restrictions || []).some(
+      (r) => (r.source === p.id || r.target === p.id) && (r.status === "ok" || r.id === flipId),
+    );
+    if (hit) open[p.id] = 1;
+  });
+  return open;
+}
+
+function repairs() {
+  if (!graph) return [];
   const rank = { broken: 0, missing: 1, strange: 2, ok: 3 };
-  const folder = (id) => {
-    const p = (graph.pillars || []).find((x) => x.id === id);
-    return p ? p.folder : id;
-  };
+  const before = openIds();
   return (graph.restrictions || [])
     .filter((r) => r.status !== "ok")
-    .map((r) => ({ ...r, from: folder(r.source), to: folder(r.target) }))
-    .sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9) || b.residual - a.residual);
+    .map((r) => {
+      const after = openIds(r.id);
+      const opens = (graph.pillars || []).filter((p) => !before[p.id] && after[p.id]).map((p) => p.folder);
+      const closes = (graph.pillars || []).every((p) => after[p.id]);
+      return {
+        id: r.id,
+        status: r.status,
+        residual: r.residual,
+        from: folderName(r.source),
+        to: folderName(r.target),
+        opens: opens,
+        closes: closes,
+      };
+    })
+    .sort((a, b) => {
+      if (a.closes !== b.closes) return a.closes ? -1 : 1;
+      if (a.opens.length !== b.opens.length) return b.opens.length - a.opens.length;
+      return (rank[a.status] ?? 9) - (rank[b.status] ?? 9) || b.residual - a.residual;
+    });
+}
+
+function closedNames(flipId) {
+  const open = openIds(flipId);
+  return (graph.pillars || []).filter((p) => !open[p.id]).map((p) => p.folder);
 }
 
 function verdictText() {
-  const blocks = ranked();
-  const open = (graph.pillars || []).filter((p) =>
-    (graph.restrictions || []).some((r) => (r.source === p.id || r.target === p.id) && r.status === "ok"),
-  ).length;
-  if (!blocks.length) return "Every map commutes. " + open + " folders may fold.";
-  const lead = blocks.slice(0, 2).map((b) => {
-    if (b.status === "missing") return b.to + " has no map";
-    if (b.status === "broken") return b.from + " → " + b.to + " will not fold";
-    return b.from + " → " + b.to + " needs a person";
-  });
-  const more = blocks.length - lead.length;
-  return open + " of " + graph.pillars.length + " may fold. " + lead.join(". ") + "." + (more ? " " + more + " more." : "");
+  if (!graph) return "";
+  const fixes = repairs();
+  const open = (graph.pillars || []).filter((p) => openIds()[p.id]).length;
+  const n = (graph.pillars || []).length;
+  if (!fixes.length) return "Every map commutes. " + open + " folders may fold.";
+  const best = fixes[0];
+  if (!best.opens.length) return open + " of " + n + " may fold. No single fix opens a new folder.";
+  if (best.closes) return "Fix " + best.from + " → " + best.to + " and the trunk closes.";
+  const still = n - open - best.opens.length;
+  return "Fix " + best.from + " → " + best.to + " and " + best.opens.join(", ") + " may fold. " + still + " still closed.";
+}
+
+function rowText(r) {
+  if (r.closes) return r.from + " → " + r.to + " · closes the trunk";
+  if (r.opens.length) return r.from + " → " + r.to + " · opens " + r.opens.join(", ");
+  return r.from + " → " + r.to + " · opens nothing";
+}
+
+function focusText(edge) {
+  const meaning = edge.meaning || lineOf(edge.st);
+  const list = repairs();
+  let f = null;
+  for (let i = 0; i < list.length; i++) if (list[i].id === edge.id) f = list[i];
+  if (!f) return meaning;
+  if (f.closes) return "This one map closes the trunk. " + meaning;
+  if (f.opens.length) {
+    const still = closedNames(edge.id);
+    return "Opens " + f.opens.join(", ") + ". " + (still.length ? still.join(", ") + " still closed. " : "") + meaning;
+  }
+  const closed = closedNames();
+  return "Opens no new folder. " + (closed.length ? closed.join(", ") + " still closed. " : "") + meaning;
+}
+
+function fixOf(id) {
+  const list = repairs();
+  for (let i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+  return null;
 }
 
 function panel(h) {
@@ -68,7 +130,7 @@ function panel(h) {
   const tb = document.getElementById("tb");
   const body = document.getElementById("tbody");
   if (!h) {
-    const blocks = ranked();
+    const blocks = repairs();
     pt.textContent = "Look here";
     pm.textContent = BLURB[view];
     pa.textContent = verdictText();
@@ -79,7 +141,7 @@ function panel(h) {
       const td = document.createElement("td");
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.textContent = r.from + " → " + r.to + " · " + lineOf(r.status);
+      btn.textContent = rowText(r);
       btn.style.cssText = "border:0;background:transparent;padding:8px 0;min-height:44px;text-transform:none;letter-spacing:0;font:500 .78rem/1.3 var(--sans);text-align:left";
       btn.onclick = () => {
         const e = L.edges.find((x) => x.id === r.id);
@@ -100,7 +162,7 @@ function panel(h) {
     const e = h.e;
     pt.textContent = (e.a.folder || e.s) + " → " + (e.b.folder || e.t);
     pm.textContent = e.rel + " · " + lineOf(e.st);
-    pa.textContent = e.meaning || lineOf(e.st);
+    pa.textContent = focusText(e);
     tb.hidden = true;
     return;
   }
@@ -109,17 +171,26 @@ function panel(h) {
   const rows = (graph.restrictions || []).filter((r) => r.source === n.id || r.target === n.id);
   const worst = rows.slice().sort((a, b) => (a.status === "ok" ? 1 : 0) - (b.status === "ok" ? 1 : 0))[0];
   pm.textContent = worst ? lineOf(worst.status) : "no maps";
-  pa.textContent = (worst && worst.residualMeaning) || (h.k === "cap" ? "Ancillary files sit above this folder." : "Downstream events sit below this folder.");
+  pa.textContent = worst && worst.status !== "ok"
+    ? focusText({ id: worst.id, st: worst.status, meaning: worst.residualMeaning })
+    : (worst && worst.residualMeaning) || (h.k === "cap" ? "Ancillary files sit above this folder." : "Downstream events sit below this folder.");
   tb.hidden = !rows.length;
   body.replaceChildren();
+  const fixes = repairs();
   rows.forEach((r) => {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
     const other = r.source === n.id ? r.target : r.source;
-    const folder = ((graph.pillars || []).find((p) => p.id === other) || {}).folder || other;
+    const name = folderName(other);
+    let lever = "";
+    for (let i = 0; i < fixes.length; i++) {
+      if (fixes[i].id !== r.id) continue;
+      if (fixes[i].closes) lever = " · closes the trunk";
+      else if (fixes[i].opens.length) lever = " · opens " + fixes[i].opens.join(", ");
+    }
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.textContent = r.relation + " " + folder + " · " + lineOf(r.status);
+    btn.textContent = r.relation + " " + name + " · " + lineOf(r.status) + lever;
     btn.style.cssText = "border:0;background:transparent;padding:8px 0;min-height:44px;text-transform:none;letter-spacing:0;font:500 .78rem/1.3 var(--sans);text-align:left";
     btn.onclick = () => {
       const e = L.edges.find((x) => x.id === r.id);
@@ -136,10 +207,8 @@ function panel(h) {
 
 function stats() {
   if (!graph) return;
-  const blocks = ranked();
-  const open = (graph.pillars || []).filter((p) =>
-    (graph.restrictions || []).some((r) => (r.source === p.id || r.target === p.id) && r.status === "ok"),
-  ).length;
+  const blocks = repairs();
+  const open = (graph.pillars || []).filter((p) => openIds()[p.id]).length;
   document.getElementById("sn").textContent = (graph.restrictions || []).length;
   document.getElementById("sok").textContent = open;
   document.getElementById("sbad").textContent = blocks.length;
