@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import { repairs } from "@/lib/swarm/insight";
 import { MODES_LIST, useSwarm } from "@/lib/swarm/store";
 import type { GlueStatus, ViewMode } from "@/lib/swarm/types";
 
@@ -192,6 +193,7 @@ export function VolumeCanvas() {
       const rank: Record<GlueStatus, number> = { broken: 0, missing: 1, strange: 2, ok: 3 };
       const word = (s: GlueStatus) =>
         s === "broken" ? "won't fold" : s === "missing" ? "no map" : s === "strange" ? "needs a person" : "";
+      const fixById = new Map(repairs(graph).map((f) => [f.id, f]));
       const visible: typeof edges = [];
 
       for (const e of edges) {
@@ -215,12 +217,25 @@ export function VolumeCanvas() {
       }
       visible
         .filter((e) => (!focus ? e.st !== "ok" : e.id === focus.id))
-        .sort((a, b) => rank[a.st] - rank[b.st])
+        .sort((a, b) => {
+          const fa = fixById.get(a.id);
+          const fb = fixById.get(b.id);
+          const sa = fa ? (fa.closesTrunk ? -100 : 0) - fa.opens.length * 10 + rank[a.st] : rank[a.st];
+          const sb = fb ? (fb.closesTrunk ? -100 : 0) - fb.opens.length * 10 + rank[b.st] : rank[b.st];
+          return sa - sb;
+        })
         .slice(0, 3)
         .forEach((e) => {
           if (mode === "subspaces" && e.role !== "drop") return;
           const m = project(e.mid);
-          const text = word(e.st) ? `${e.rel} · ${word(e.st)}` : e.rel;
+          const f = fixById.get(e.id);
+          const text = f?.closesTrunk
+            ? "closes the trunk"
+            : f?.opens.length
+              ? `opens ${f.opens[0]}`
+              : word(e.st)
+                ? `${e.rel} · ${word(e.st)}`
+                : e.rel;
           ctx.font = "600 11px sans-serif";
           ctx.textAlign = "center";
           const tw = ctx.measureText(text).width;
