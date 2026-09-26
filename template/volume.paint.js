@@ -231,9 +231,16 @@ function paint() {
     ctx.setLineDash([]);
     if (on && (hot || (keep && keep.edge === e.id))) labeled.push(e);
   });
-  labeled.sort((a, b) => (rank[a.st] ?? 9) - (rank[b.st] ?? 9)).slice(0, 3).forEach((e) => {
+  labeled.sort((a, b) => {
+    const fa = typeof fixOf === "function" ? fixOf(a.id) : null;
+    const fb = typeof fixOf === "function" ? fixOf(b.id) : null;
+    const sa = fa ? (fa.closes ? -100 : 0) - fa.opens.length * 10 + (rank[a.st] || 9) : rank[a.st] || 9;
+    const sb = fb ? (fb.closes ? -100 : 0) - fb.opens.length * 10 + (rank[b.st] || 9) : rank[b.st] || 9;
+    return sa - sb;
+  }).slice(0, 3).forEach((e) => {
     const m = project(e.mid);
-    const text = word(e.st) ? e.rel + " · " + word(e.st) : e.rel;
+    const f = typeof fixOf === "function" ? fixOf(e.id) : null;
+    const text = f && f.closes ? "closes the trunk" : f && f.opens.length ? "opens " + f.opens[0] : word(e.st) ? e.rel + " · " + word(e.st) : e.rel;
     ctx.font = "600 11px sans-serif";
     ctx.textAlign = "center";
     const tw = ctx.measureText(text).width;
