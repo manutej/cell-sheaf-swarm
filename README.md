@@ -65,7 +65,7 @@ Olive Buff paper `#c1c494`, ink `#253122`, ube `#501345`, Cossack Green `#437742
 
 ## Views
 
-HTML template: **Exists, Restricts, Stacks, Known, May fold, Lives**. The title is a verdict. Blockers are labeled. See [`contracts/EVAL.md`](contracts/EVAL.md).
+HTML template: **Exists, Restricts, Stacks, Known, May fold, Lives**. The title is the one map that opens a closed folder. See [`contracts/EVAL.md`](contracts/EVAL.md).
 
 Swarm observatory: **Swarm, Commits, Live, Operad, Eval, Subspaces**.
 
