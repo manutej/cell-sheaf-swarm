@@ -13,10 +13,16 @@ Four seats, this volume, before the change. Findings are about the picture, not 
 
 Do not restyle `template/tokens.css`. Color is still glue. Gold is still earned.
 
-1. The title is a **verdict** computed from the sheaf: how many folders may fold, and the first two blockers in words.
-2. Default sheet is **Look here**, ranked broken → missing → strange. A row focuses that map.
+1. The title is a **verdict**: the one map that, if repaired, opens a closed folder. Trunk closes only when every folder has a legal incident.
+2. Default sheet is **Look here**, ranked by what that one fix opens, then by severity. A row focuses that map.
 3. **Ok curves recede.** Broken, missing, and strange stay heavy and are labeled (`won't fold`, `no map`, `needs a person`).
 4. A selected folder or map **dims the rest** to its neighborhood.
 5. Tab words are questions (`Moving`, `May fold`, `In flight`, `Agrees`, `Wrong`, `Lives`), not instrument names.
 
 JSON stays the sheaf. A new contract gets the same reading with no chrome fork.
+
+## Second read
+
+Ranking broken → missing → strange listed symptoms. On this specimen a strange map between two folders that already may fold outranked the broken map that is the only way into `lattice-ops`.
+
+The verdict is now a single-fix counterfactual. Flip one restriction to ok. Count folders that gain their first legal incident. `closes the trunk` only when every folder has one — the same law as `onTrunk`, not a new path. Here: fix `orchestrator → lattice-ops` and `lattice-ops` may fold. `noether-wiki` stays closed. A strange feed between open folders opens nothing, so it sits last.
