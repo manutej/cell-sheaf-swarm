@@ -11,7 +11,7 @@ The HTML is the thing you copy when rolling a new sheaf — not a screenshot, no
 | `volume.paint.js` | Curvilinear ρ, last-folder pillars, up/down fans, six design views. |
 | `volume.boot.js` | Contract fetch, swipe/orbit, pause-default, roll file. |
 
-The title is a verdict computed from the sheaf. Default view draws only the maps that do not commute, and names them. Ok curves recede. Gold is still earned. Do not restyle `tokens.css`.
+The title is the one map that, if repaired, opens a closed folder. Default view draws only the maps that do not commute, and names what each fix opens. Ok curves recede. Gold is still earned. Do not restyle `tokens.css`.
 
 Views (the question changes which family is drawn):
 
