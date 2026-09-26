@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { CATALOG, VIEW_BLURB, VIEW_LABEL } from "@/lib/swarm/specimen";
-import { blockers, openCount, statusLine, verdict } from "@/lib/swarm/insight";
+import { blockers, focusLine, openCount, repairs, repairLabel, statusLine, verdict } from "@/lib/swarm/insight";
 import { MODES_LIST, useSwarm } from "@/lib/swarm/store";
 import type { GlueStatus } from "@/lib/swarm/types";
 import { VolumeCanvas } from "./VolumeCanvas";
@@ -36,7 +36,7 @@ function Inspector() {
   const findings = graph.findings ?? [];
   const restrictions = graph.restrictions;
   const pillars = graph.pillars;
-  const blocks = blockers(graph);
+  const fixes = repairs(graph);
 
   const pillar = pillars.find((p) => p.id === selected);
   const agent = agents.find((a) => a.id === selected);
@@ -46,9 +46,9 @@ function Inspector() {
   let title = "Look here";
   let meta = VIEW_BLURB[mode];
   let body = verdict(graph);
-  let rows: { id: string; label: string; status: GlueStatus }[] = blocks.slice(0, 6).map((b) => ({
+  let rows: { id: string; label: string; status: GlueStatus }[] = fixes.slice(0, 6).map((b) => ({
     id: b.id,
-    label: `${b.from} → ${b.to} · ${b.line}`,
+    label: repairLabel(b),
     status: b.status,
   }));
 
@@ -57,19 +57,28 @@ function Inspector() {
     const to = pillars.find((p) => p.id === focused.target)?.folder ?? focused.target;
     title = `${from} → ${to}`;
     meta = `${focused.relation} · ${statusLine(focused.status)}`;
-    body = focused.residualMeaning || statusLine(focused.status);
+    body = focusLine(graph, focused.id);
     rows = [];
   } else if (pillar) {
     const incident = restrictions.filter((r) => r.source === pillar.id || r.target === pillar.id);
+    const byId = new Map(fixes.map((f) => [f.id, f]));
     const worst = [...incident].sort((a, b) => (a.status === "ok" ? 1 : 0) - (b.status === "ok" ? 1 : 0))[0];
     title = pillar.folder;
     meta = worst ? statusLine(worst.status) : "no maps";
-    body = worst?.residualMeaning || (worst?.status === "ok" ? "Every map on this folder may fold." : "No map touches this folder.");
-    rows = incident.map((r) => ({
-      id: r.id,
-      label: `${r.relation} ${r.source === pillar.id ? pillars.find((p) => p.id === r.target)?.folder : pillars.find((p) => p.id === r.source)?.folder} · ${statusLine(r.status)}`,
-      status: r.status,
-    }));
+    body =
+      worst && worst.status !== "ok"
+        ? focusLine(graph, worst.id)
+        : worst?.residualMeaning || (worst?.status === "ok" ? "Every map on this folder may fold." : "No map touches this folder.");
+    rows = incident.map((r) => {
+      const f = byId.get(r.id);
+      const lever = f?.closesTrunk ? " · closes the trunk" : f?.opens.length ? ` · opens ${f.opens.join(", ")}` : "";
+      const other = r.source === pillar.id ? pillars.find((p) => p.id === r.target)?.folder : pillars.find((p) => p.id === r.source)?.folder;
+      return {
+        id: r.id,
+        label: `${r.relation} ${other} · ${statusLine(r.status)}${lever}`,
+        status: r.status,
+      };
+    });
   } else if (agent) {
     title = agent.role;
     meta = `${agent.state} · ${pillars.find((p) => p.id === agent.livesAt)?.folder ?? agent.livesAt}`;
