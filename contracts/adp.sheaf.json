@@ -1,0 +1,61 @@
+{
+  "schema": "sheaf-graph/2020-12",
+  "id": "adp.trunk",
+  "title": "A Discipline of Programming — set cover",
+  "palette": {"paper": "#c1c494", "ink": "#253122", "ube": "#501345", "ok": "#437742", "pulse": "#009465", "gold": "#fdc57e", "silver": "#b6bfc1", "bad": "#ae5224", "odd": "#c47b2b", "miss": "#6d6a55", "down": "#8c4c62"},
+  "pillars": [
+    {"id": "states", "folder": "states", "kind": "core", "known": true, "dim": 4, "x": 0, "z": 0},
+    {"id": "largest", "folder": "wp", "kind": "lib", "known": true, "dim": 5, "x": -110, "z": -20},
+    {"id": "guards", "folder": "guards", "kind": "lib", "known": true, "dim": 4, "x": 110, "z": -20},
+    {"id": "invariant", "folder": "invariant", "kind": "app", "known": true, "dim": 4, "x": -70, "z": 90},
+    {"id": "refusal", "folder": "refusal", "kind": "mem", "known": true, "dim": 3, "x": 70, "z": 90},
+    {"id": "gcl", "folder": "gcl", "kind": "app", "known": true, "dim": 4, "x": 0, "z": -100},
+    {"id": "hoare", "folder": "hoare1969", "kind": "mem", "known": false, "dim": 2, "x": -150, "z": 40},
+    {"id": "testing", "folder": "testing", "kind": "mem", "known": false, "dim": 2, "x": 150, "z": 40}
+  ],
+  "restrictions": [
+    {"id": "r-sw", "source": "states", "target": "largest", "relation": "includes", "kind": "identity", "status": "ok", "residual": 0.02, "residualMeaning": "A predicate is a set of states. wp(S,R) is the largest initial set guaranteed to terminate in R."},
+    {"id": "r-wg", "source": "largest", "target": "guards", "relation": "gates", "kind": "projection", "status": "ok", "residual": 0.06, "residualMeaning": "Guards are a finite cover. A hole aborts. Overlap is bounded nondeterminacy. The daemon is erratic, not fair."},
+    {"id": "r-gi", "source": "guards", "target": "invariant", "relation": "feeds", "kind": "embed", "status": "ok", "residual": 0.08, "residualMeaning": "Invariant is closed: each body maps I intersect guard into I. Variant decreases on that set."},
+    {"id": "r-ir", "source": "invariant", "target": "refusal", "relation": "remembers", "kind": "type-aware", "status": "ok", "residual": 0.04, "residualMeaning": "wp(S, false) = false. The empty set has no states. Nothing may be credited with establishing it."},
+    {"id": "r-lg", "source": "largest", "target": "gcl", "relation": "includes", "kind": "identity", "status": "ok", "residual": 0.01, "residualMeaning": "wp defines the guarded-command language. That pair is not a fight."},
+    {"id": "r-lh", "source": "largest", "target": "hoare", "relation": "gates", "kind": "projection", "status": "strange", "residual": 0.42, "residualMeaning": "Hoare 1969 is partial correctness. Do not paint this restriction teal against total wp."},
+    {"id": "r-rt", "source": "refusal", "target": "testing", "relation": "gates", "kind": "type-aware", "status": "broken", "residual": 0.71, "residualMeaning": "Testing shows presence of bugs, not absence. A green suite is not a section. Do not derive through it."}
+  ],
+  "commits": [
+    {"sha": "a19761", "pillar": "states", "message": "predicate is a set", "onTrunk": true, "at": 0},
+    {"sha": "a19762", "pillar": "largest", "message": "wp is the largest set", "onTrunk": true, "at": 1},
+    {"sha": "a19763", "pillar": "guards", "message": "cover, hole aborts", "onTrunk": true, "at": 2},
+    {"sha": "a19764", "pillar": "invariant", "message": "closed under the body", "onTrunk": true, "at": 3},
+    {"sha": "a19765", "pillar": "refusal", "message": "excluded miracle", "onTrunk": true, "at": 4},
+    {"sha": "a19766", "pillar": "gcl", "message": "wp defines if-fi and do-od", "onTrunk": true, "at": 5},
+    {"sha": "a19767", "pillar": "hoare", "message": "partial triple, not total", "onTrunk": false, "at": 6},
+    {"sha": "a19768", "pillar": "testing", "message": "samples, does not characterize", "onTrunk": false, "at": 7}
+  ],
+  "agents": [
+    {"id": "k0", "role": "kernel", "state": "idle", "livesAt": "largest", "task": "P subset of wp?", "edgeId": "r-sw", "t": 0, "ticksLeft": 0},
+    {"id": "w1", "role": "worker", "state": "idle", "livesAt": "guards", "task": "cover the claimed set", "edgeId": "r-wg", "t": 0, "ticksLeft": 0},
+    {"id": "r1", "role": "reviewer", "state": "idle", "livesAt": "hoare", "task": "seat: partial vs total", "edgeId": "r-lh", "t": 0, "ticksLeft": 0},
+    {"id": "d1", "role": "detector", "state": "idle", "livesAt": "testing", "task": "energy on the green suite", "edgeId": "r-rt", "t": 0, "ticksLeft": 0}
+  ],
+  "operad": [
+    {"id": "q0", "parent": null, "question": "Is the claimed precondition inside wp, and do adjacent pages denote the same set?", "sort": "Verdict", "compose": "pending", "collapse": "pending", "oc": "pending", "prompt": "SLOT[root] sort=Verdict · inputs=P,wp,guards,I · rule=P subset wp(S,R) and overlap restrictions agree · refuse if wp(S,false) is not false"},
+    {"id": "q1", "parent": "q0", "question": "Do the guards cover the claimed set?", "sort": "Restriction", "compose": "union of guards", "collapse": "wp", "oc": "agree", "prompt": "SLOT[guards] sort=Cover · hole aborts · overlap is nondeterminacy · daemon erratic not fair"}
+  ],
+  "findings": [
+    {"id": "F1", "seat": "craft", "sev": "P0", "claim": "wp defines GCL", "evidence": "not a terracotta edge"},
+    {"id": "F2", "seat": "red", "sev": "P0", "claim": "Hoare 1969 is partial", "evidence": "strange rho, not on trunk"},
+    {"id": "F3", "seat": "red", "sev": "P0", "claim": "Testing is not absence", "evidence": "broken rho, gold withheld"}
+  ],
+  "types": [
+    {"id": "ty-set", "folder": "Set", "x": -70, "z": -40},
+    {"id": "ty-wp", "folder": "PredicateTransformer", "x": 70, "z": -40},
+    {"id": "ty-ref", "folder": "Refusal", "x": 0, "z": 90}
+  ],
+  "artifacts": [
+    {"id": "a0", "folder": "adp.sheaf.json", "type": "ty-set", "maps": "states", "status": "ok"},
+    {"id": "a1", "folder": "wp", "type": "ty-wp", "maps": "largest", "status": "ok"},
+    {"id": "a2", "folder": "hoare1969", "type": "ty-ref", "maps": "hoare", "status": "strange"},
+    {"id": "a3", "folder": "testing", "type": "ty-ref", "maps": "testing", "status": "broken"}
+  ]
+}
