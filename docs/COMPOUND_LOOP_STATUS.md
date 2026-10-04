@@ -1,28 +1,33 @@
 # Compound loop status (chronological)
 
-Updated when integration work lands. **Main is not merged yet** — work lives on feature branches.
+## Merged
 
-## Pull requests (most complete wins)
+| When | Repo | Item |
+| --- | --- | --- |
+| 2026-10-04 | cell-sheaf | PR #1 Phase 0, PR #2 kernel pin `c93d0e5` |
+| 2026-10-04 | cell-sheaf-swarm | PR #2 integration + pulse-core, PR #3 worker adapters |
 
-| When | Repo | PR | Branch | Supersedes | Contains |
-| --- | --- | --- | --- | --- | --- |
-| 2026-10-04 04:05Z | cell-sheaf-swarm | [#1](https://github.com/manutej/cell-sheaf-swarm/pull/1) DRAFT | `cursor/unified-integration-ideate-50e6` | — | Docs only (ideation, MVP plan) |
-| 2026-10-04 04:17Z | cell-sheaf-swarm | **[#2](https://github.com/manutej/cell-sheaf-swarm/pull/2) OPEN** | `cursor/unified-federated-loop-aeac` | **#1** | #1 docs + federation prototype + observatory + **Phase 1 pulse-core** |
-| 2026-10-04 04:05Z | cell-sheaf | **[#1](https://github.com/manutej/cell-sheaf/pull/1) OPEN** | `cursor/contract-release-bus-50e6` | — | **Phase 0** CI, kernel pin, docs hub |
+## Active
 
-**Use swarm PR #2** (not #1). **Use cell-sheaf PR #1** for surface.
+| Phase | Branch | PR |
+| --- | --- | --- |
+| **3 Eval harness** | `cursor/eval-harness-phase3-aeac` | (pending) |
 
 ## Phase checklist
 
-| Phase | Status | Evidence |
-| --- | --- | --- |
-| 0 Contract spine | **Ready to merge** (surface) | cell-sheaf PR #1; local `validate-contracts` + `check-kernel-sync` green with `_kernel` at pin |
-| 1 Headless pulse | **In progress on swarm #2** | `pulse-core.ts`, `pulse-run.mjs`, `npm test` pulse snapshot |
-| 2 Federated worker | Prototype only | `federated-harness.mjs` simulates; not WorkerAdapter |
-| 3–6 | Not started | See `IMPLEMENTATION_OUTLINE.md` |
+| Phase | Status |
+| --- | --- |
+| 0–2 | **Done** on `main` |
+| 3 Eval & learning | **In PR** — session findings, draft patches, EVAL seats in contract |
+| 4 Operad gate & release sync | Next |
+| 5 Surface parity | Planned |
 
-## Next compound loop
+## Verify
 
-1. Merge **cell-sheaf #1** → Phase 0 exit.
-2. Merge **cell-sheaf-swarm #2** → kernel docs + pulse-core + prototype.
-3. Phase 2: `WorkerAdapter` + retire duplicate pulse in `federated-harness.mjs`.
+```sh
+cd repos/cell-sheaf-swarm
+npm test
+npm run pulse:run -- --graph contracts/swarm.sheaf.json --ticks 28 --adapter local
+```
+
+Look for `finding`, `patch`, and `eval` events at ticks 14 and 28.

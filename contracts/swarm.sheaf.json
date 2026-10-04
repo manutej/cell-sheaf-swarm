@@ -101,6 +101,10 @@
     }
   ],
   "findings": [
+    { "id": "ev-user", "seat": "user", "sev": "P0", "claim": "I cannot tell what to do", "evidence": "Header is ok ρ / hurt ρ / JEV n/128. No sentence names a folder." },
+    { "id": "ev-operator", "seat": "operator", "sev": "P0", "claim": "I cannot act on a map", "evidence": "Inspector leads with kind and dim. Blockers are unsorted." },
+    { "id": "ev-craft", "seat": "craft", "sev": "P1", "claim": "Legal glue shouts as loud as a break", "evidence": "Every curve is ~the same weight." },
+    { "id": "ev-red", "seat": "red", "sev": "P0", "claim": "The views are a costume of the paper", "evidence": "Renaming the chip does not change the question." },
     { "id": "U1", "seat": "user", "sev": "P0", "claim": "Mode must remap ρ, not costume the chip", "evidence": "showRho(mode) filters the drawn family" },
     { "id": "U2", "seat": "user", "sev": "P0", "claim": "Live agents must be visible in flight", "evidence": "Agent.t walks the restriction bezier" },
     { "id": "O1", "seat": "operator", "sev": "P1", "claim": "Swipe ↕ cycles modes; drag ↔ orbits", "evidence": "gesture lock after 18px" },

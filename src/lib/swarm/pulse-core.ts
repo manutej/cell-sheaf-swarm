@@ -1,4 +1,5 @@
-import type { Agent, Commit, GlueStatus, OperadNode, SheafGraph, SwarmEvent } from "./types";
+import { applyEvalHarness, type PatchProposal } from "./eval-harness";
+import type { Agent, Commit, Finding, GlueStatus, OperadNode, SheafGraph, SwarmEvent } from "./types";
 import { DISPATCH_ROLES, type WorkerAdapter } from "./worker";
 
 export const MAX_PULSE_EVENTS = 48;
@@ -10,6 +11,10 @@ export type PulseClockState = {
   commits: Commit[];
   events: SwarmEvent[];
   operad: OperadNode[];
+  /** Reviewer-stamped drafts this run — not written to contract JSON. */
+  sessionFindings: Finding[];
+  /** Draft ρ patches — never auto-applied (Phase 3). */
+  patchProposals: PatchProposal[];
 };
 
 export type PulseRng = {
@@ -48,6 +53,8 @@ export function seedPulseFromGraph(graph: SheafGraph, note: string, rng: PulseRn
         status: "ok",
       },
     ],
+    sessionFindings: [],
+    patchProposals: [],
   };
 }
 
@@ -82,13 +89,13 @@ export function pulseStep(
   const adapter = opts.adapter;
   const tick = state.tick + 1;
   const restrictions = graph.restrictions;
-  const findings = graph.findings ?? [];
-  const arts = graph.artifacts ?? [];
   let agents = state.agents.map((a) => ({ ...a }));
   let commits = state.commits;
   let events = state.events;
   let jevDone = state.jevDone;
   let operad = state.operad;
+  let sessionFindings = state.sessionFindings ?? [];
+  let patchProposals = state.patchProposals ?? [];
 
   for (const a of agents) {
     if (a.state === "inflight") {
@@ -192,14 +199,20 @@ export function pulseStep(
   }
 
   if (tick % 14 === 0) {
-    events = pushEvent(
+    const harness = applyEvalHarness(
+      tick,
+      graph,
+      agents,
+      jevDone,
+      sessionFindings,
+      patchProposals,
       events,
       rng,
-      "eval",
-      `JEV ${jevDone}/128 · seats ${findings.length} · arts ${arts.length}`,
-      "ok",
     );
+    sessionFindings = harness.sessionFindings;
+    patchProposals = harness.patchProposals;
+    events = harness.events;
   }
 
-  return { tick, jevDone, agents, commits, events, operad };
+  return { tick, jevDone, agents, commits, events, operad, sessionFindings, patchProposals };
 }
