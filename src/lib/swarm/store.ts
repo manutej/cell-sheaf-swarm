@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { downloadSheaf, snapshotSheaf, tryParseSheaf } from "./load-sheaf";
 import { CATALOG, SWARM_GRAPH } from "./specimen";
+import type { PatchProposal } from "./eval-harness";
 import { defaultPulseRng, pulseStep, seedPulseFromGraph } from "./pulse-core";
-import type { Agent, Commit, OperadNode, SheafGraph, SwarmEvent, ViewMode } from "./types";
+import type { Agent, Commit, Finding, OperadNode, SheafGraph, SwarmEvent, ViewMode } from "./types";
 
 function seedFrom(graph: SheafGraph, note: string): Pick<
   SwarmState,
@@ -29,6 +30,8 @@ export type SwarmState = {
   commits: Commit[];
   events: SwarmEvent[];
   operad: OperadNode[];
+  sessionFindings: Finding[];
+  patchProposals: PatchProposal[];
   selected: string | null;
   focusEdge: string | null;
   sheetOpen: boolean;
@@ -105,6 +108,8 @@ export const useSwarm = create<SwarmState>((set, get) => ({
         commits: s.commits,
         events: s.events,
         operad: s.operad,
+        sessionFindings: s.sessionFindings ?? [],
+        patchProposals: s.patchProposals ?? [],
       },
       s.graph,
       { rng: defaultPulseRng() },

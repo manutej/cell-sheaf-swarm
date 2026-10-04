@@ -116,6 +116,8 @@ export const EventKind = z.enum([
   "block",
   "fix",
   "eval",
+  "finding",
+  "patch",
   "roll",
 ]);
 export type EventKind = z.infer<typeof EventKind>;

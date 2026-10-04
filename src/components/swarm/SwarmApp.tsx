@@ -33,7 +33,8 @@ function Inspector() {
   const setSheet = useSwarm((s) => s.setSheet);
   const lookAt = useSwarm((s) => s.lookAt);
   const focusEdge = useSwarm((s) => s.focusEdge);
-  const findings = graph.findings ?? [];
+  const sessionFindings = useSwarm((s) => s.sessionFindings ?? []);
+  const findings = [...sessionFindings, ...(graph.findings ?? [])];
   const restrictions = graph.restrictions;
   const pillars = graph.pillars;
   const fixes = repairs(graph);
