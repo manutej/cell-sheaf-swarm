@@ -6,3 +6,6 @@ dist
 screenshots
 artifacts
 attachments
+.meta-learning
+observatory/node_modules
+observatory/dist

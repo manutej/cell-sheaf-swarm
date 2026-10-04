@@ -11,11 +11,22 @@
   },
   "scripts": {
     "sheaf:validate": "node scripts/validate-sheaf.mjs",
-    "test": "node --test scripts/validate-sheaf.test.mjs"
+    "federation:run": "node scripts/run-federated-loop.mjs",
+    "pulse:run": "node scripts/pulse-run.mjs",
+    "test": "node --test scripts/validate-sheaf.test.mjs scripts/federated-loop.test.mjs scripts/pulse-run.test.mjs",
+    "observatory:dev": "npm run dev --prefix observatory",
+    "observatory:build": "npm run build --prefix observatory"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "zod": "^3.24.0"
   },
   "files": [
     "contracts",
     "src/lib/swarm",
+    "scripts/pulse-run.mjs",
+    "scripts/pulse-run-cli.ts",
     "src/components/swarm",
     "scripts/validate-sheaf.mjs",
     "LICENSE",

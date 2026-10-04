@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #c1c494;
+  --color-ink: #253122;
+  --color-ube: #501345;
+  --color-ok: #437742;
+  --color-odd: #c47b2b;
+  --color-bad: #ae5224;
+  --color-miss: #6d6a55;
+  --color-gold: #fdc57e;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter Tight", system-ui, sans-serif;
+}
