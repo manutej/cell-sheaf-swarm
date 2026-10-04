@@ -77,4 +77,24 @@ node scripts/validate-sheaf.mjs
 
 CI runs the same command on every push (`.github/workflows/sheaf.yml`).
 
+## Federated running loop
+
+Three cell loops (core/lib, app, mem) tick in parallel; a coordinator runs **four-seat eval** (`contracts/EVAL.md`) and **meta-learning** weights on block events.
+
+```sh
+npm test
+npm run federation:run
+# Report: .meta-learning/last-report.json
+```
+
+Integration map for [manutej/cell-sheaf](https://github.com/manutej/cell-sheaf): [`docs/INTEGRATION.md`](docs/INTEGRATION.md). Product direction: [`STRATEGY.md`](STRATEGY.md).
+
+## Observatory (React dev shell)
+
+```sh
+npm run observatory:dev
+```
+
+Vite app in `observatory/` loads `src/components/swarm/SwarmApp.tsx` against catalog specimens.
+
 License: MIT.

@@ -11,7 +11,10 @@
   },
   "scripts": {
     "sheaf:validate": "node scripts/validate-sheaf.mjs",
-    "test": "node --test scripts/validate-sheaf.test.mjs"
+    "federation:run": "node scripts/run-federated-loop.mjs",
+    "test": "node --test scripts/validate-sheaf.test.mjs scripts/federated-loop.test.mjs",
+    "observatory:dev": "npm run dev --prefix observatory",
+    "observatory:build": "npm run build --prefix observatory"
   },
   "files": [
     "contracts",

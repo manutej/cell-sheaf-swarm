@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ideation — Cell-Sheaf unification</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--paper:#c1c494;--ink:#253122;--ube:#501345;--ok:#437742;--bad:#ae5224;--gold:#fdc57e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Inter Tight",system-ui,sans-serif;line-height:1.5;font-size:16px}
+.wrap{max-width:52rem;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+h1{font-family:Fraunces,serif;font-weight:600;font-size:2rem;margin:0 0 .25rem}
+.meta{font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ube);margin-bottom:1.5rem}
+h2{font-family:Fraunces,serif;font-size:1.35rem;margin:2rem 0 .75rem;border-top:2px solid var(--ink);padding-top:1rem}
+nav.jump a{display:block;font-size:.85rem;color:var(--ube);text-decoration:none;margin:.2rem 0}
+.card{border:2px solid var(--ink);padding:1rem 1.1rem;margin:1rem 0;background:#d4d7a8}
+.card h3{margin:0 0 .35rem;font-size:1.05rem}
+.tag{font-family:"JetBrains Mono",monospace;font-size:.65rem;text-transform:uppercase;color:var(--ube)}
+.basis{font-family:"JetBrains Mono",monospace;font-size:.78rem;background:#b8bb92;padding:.5rem;margin:.5rem 0;white-space:pre-wrap}
+table.rej{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:1rem}
+table.rej th,table.rej td{border:1px solid var(--ink);padding:.35rem .5rem;text-align:left}
+footer.composition-signal{margin-top:3rem;font-family:"JetBrains Mono",monospace;font-size:.7rem;color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Cell-Sheaf unification ideation</h1>
+<p class="meta">date: 2026-10-04 · topic: cell-sheaf-unification · focus: two-repo overlap, MVP product, federated loops · mode: repo-grounded</p>
+</header>
+
+<section id="grounding">
+<h2>Grounding context</h2>
+<p><strong>cell-sheaf</strong> is the copy-paste HTML design template (Pages, no TS). <strong>cell-sheaf-swarm</strong> is the contract kernel: JSON Schema, validate CLI, Zustand swarm clock, React observatory sources, CI. READMEs cross-link; <code>template/</code> and contracts mostly overlap but swarm is canonical (schema, ROLL, adp specimen). The swarm contract already models the desired architecture: orchestrator, multi-agent-eval, broken <code>lattice-ops</code> ρ, operad compose≟collapse, JEV 128 — but React was not runnable until <code>observatory/</code>.</p>
+<p>EVAL.md adversarial read: users need a <em>verdict sentence</em>, not ρ counts; operators need ranked repairs; federation addresses orchestrator/eval stress without restyling tokens.</p>
+</section>
+
+<section id="axes">
+<h2>Topic axes</h2>
+<ol>
+<li>Repo &amp; publish topology (two remotes vs monorepo vs npm package)</li>
+<li>Runtime surfaces (static template vs React observatory vs CLI harness)</li>
+<li>Running loops &amp; evaluation (pulse, federation, meta-learning)</li>
+<li>Contract lifecycle (ROLL, validate, catalog, repair law)</li>
+<li>Product narrative (MVP persona, metrics, 10× leap from idea)</li>
+</ol>
+</section>
+
+<section id="ideas">
+<h2>Ranked ideas</h2>
+<nav class="jump" aria-label="Jump to ideas">
+<a href="#i1">1. Kernel-first monorepo with publish mirror</a>
+<a href="#i2">2. Federated loop as CI gate</a>
+<a href="#i3">3. Shared insight bundle for HTML + TS</a>
+<a href="#i4">4. Observatory-as-product, template-as-top-of-funnel</a>
+<a href="#i5">5. Meta-learning wiki (noether-wiki pillar)</a>
+<a href="#i6">6. Real lattice-ops bridge (fix r-op)</a>
+<a href="#i7">7. Spec-to-Notion implementation tracker</a>
+</nav>
+
+<article class="card" id="i1">
+<h3>1. Kernel-first monorepo with publish mirror</h3>
+<p class="tag">axis: repo topology · confidence 82% · complexity M</p>
+<p>Keep cell-sheaf-swarm as sole writeable kernel; cell-sheaf becomes a release mirror of <code>template/</code> + catalog only, updated by tag sync job.</p>
+<div class="basis">direct: README.md (both repos) — "Copy template/" and cross-links; diff shows swarm owns sheaf-graph.schema.json</div>
+<p><strong>Rationale:</strong> Stops tokens.css drift (already differ slightly). Preserves zero-install Pages audience.</p>
+<p><strong>Downsides:</strong> Two remotes until merge; sync discipline required.</p>
+</article>
+
+<article class="card" id="i2">
+<h3>2. Federated loop as CI gate</h3>
+<p class="tag">axis: running loops · confidence 78% · complexity M</p>
+<p>Run <code>npm run federation:run</code> in CI after validate; fail only on schema, warn on eval seats until specimen repaired.</p>
+<div class="basis">direct: scripts/federated-harness.mjs — three cells, four-seat eval, meta-learning jsonl</div>
+<p><strong>Rationale:</strong> Encodes operad/JEV story as executable law, not demo animation.</p>
+<p><strong>Downsides:</strong> Flaky if stochastic pulse; may need seeded RNG.</p>
+</article>
+
+<article class="card" id="i3">
+<h3>3. Shared insight bundle for HTML + TS</h3>
+<p class="tag">axis: runtime surfaces · confidence 70% · complexity H</p>
+<p>Build <code>insight.ts</code> to small ESM via esbuild; import from <code>volume.boot.js</code> for identical repair ranking on Pages.</p>
+<div class="basis">direct: contracts/EVAL.md + src/lib/swarm/insight.ts — verdict/repairs already in TS, boot.js still header counts</div>
+<p><strong>Rationale:</strong> Closes P0 "views are a costume" by one ranking law everywhere.</p>
+<p><strong>Downsides:</strong> Introduces build step to "no build" template philosophy.</p>
+</article>
+
+<article class="card" id="i4">
+<h3>4. Observatory-as-product, template-as-top-of-funnel</h3>
+<p class="tag">axis: product narrative · confidence 85% · complexity M</p>
+<p>Ship Vite observatory for operators; keep static template for designers rolling sheaves. Single STRATEGY.md names both tracks.</p>
+<div class="basis">reasoned: STRATEGY tracks + swarm six modes vs template six design views — complementary, not duplicate SKUs</div>
+<p><strong>Rationale:</strong> 10× vs "idea" = runnable loop + readable volume, not more JSON fields.</p>
+<p><strong>Downsides:</strong> Two UX surfaces to maintain.</p>
+</article>
+
+<article class="card" id="i5">
+<h3>5. Meta-learning wiki (noether-wiki pillar)</h3>
+<p class="tag">axis: running loops · confidence 65% · complexity H</p>
+<p>Persist federation.jsonl into rolling sheaf commits on <code>wiki</code> pillar; export rolls session warm.</p>
+<div class="basis">direct: swarm.sheaf.json — wiki pillar + missing r-tw; agent p2 task "fold session warm"</div>
+<p><strong>Rationale:</strong> Makes meta-learning visible in-contract, not hidden dotfile.</p>
+<p><strong>Downsides:</strong> Contract bloat; needs ROLL rules for artifacts.</p>
+</article>
+
+<article class="card" id="i6">
+<h3>6. Real lattice-ops bridge (fix r-op)</h3>
+<p class="tag">axis: contract lifecycle · confidence 88% · complexity L</p>
+<p>Repair broken orchestrator→lattice-ops ρ in specimen or emit sidecar ops dashboard that satisfies type-aware embed law.</p>
+<div class="basis">direct: insight.ts repairs — fix orchestrator→lattice-ops opens lattice-ops; EVAL counterfactual</div>
+<p><strong>Rationale:</strong> MVP credibility: federation currently blocks 5 agents — product demo must show path to green.</p>
+<p><strong>Downsides:</strong> May require real external integration definition.</p>
+</article>
+
+<article class="card" id="i7">
+<h3>7. Spec-to-Notion implementation tracker</h3>
+<p class="tag">axis: product narrative · confidence 60% · complexity L</p>
+<p>Mirror unified plan U-IDs to Notion tasks for stakeholders; link PRs back to sheaf commits.</p>
+<div class="basis">external: spec-to-implementation skill — plan phases map to task DB rows</div>
+<p><strong>Rationale:</strong> Bridges math-native repo to delivery hygiene without issue-tracker in sheaf.</p>
+<p><strong>Downsides:</strong> Second system of record if not kept sparse.</p>
+</article>
+</section>
+
+<section id="rejections">
+<h2>Rejection summary</h2>
+<table class="rej">
+<tr><th>Idea (raw)</th><th>Reason</th></tr>
+<tr><td>Merge into unrelated monorepo</td><td>scope overrun — loses Pages simplicity</td></tr>
+<tr><td>Fifth glue status "warn"</td><td>violates ROLL law / strategy boundary</td></tr>
+<tr><td>Replace sheaf with generic graph DB</td><td>subject-replacement — abandons cellular sheaf UX</td></tr>
+<tr><td>Auto-restyle tokens for branding</td><td>contradicts "do not restyle tokens.css"</td></tr>
+<tr><td>LLM-only eval without seats</td><td>duplicates weaker idea #2; ungrounded</td></tr>
+</table>
+<p><strong>Top pick:</strong> #4 + #2 together — runnable observatory plus federated eval CI — with #6 as the first human repair milestone.</p>
+<p><strong>Axis gap:</strong> none (all five axes have survivors).</p>
+</section>
+
+<footer class="composition-signal">Composed 2026-10-04T04:06Z by ce-ideate from user query (cell-sheaf + cell-sheaf-swarm integration, federated meta-learning harness)</footer>
+</div>
+</body>
+</html>
