@@ -1,58 +1,69 @@
-# cell-sheaf ↔ cell-sheaf-swarm integration map
+# Integration — cell-sheaf + cell-sheaf-swarm
 
-Two public repos that share one **visual law** (HTML template + Wada tokens) and one **data law** (SheafGraph `2020-12` JSON). They differ in **audience**, **runtime depth**, and **publish surface**.
+## Roles
 
-## Side-by-side
-
-| Dimension | [cell-sheaf](https://github.com/manutej/cell-sheaf) | [cell-sheaf-swarm](https://github.com/manutej/cell-sheaf-swarm) |
+| Repo | Role | Change here first |
 | --- | --- | --- |
-| Primary job | Copy-paste **design template** for new volumes | **Kernel**: schema, ROLL law, TS swarm logic, CI |
-| Runtime | Static GitHub Pages (`template/volume.boot.js`) | Pages template **plus** React observatory sources (not wired until `observatory/`) |
-| Contracts | Subset (`swarm`, `paper`, `blank`, catalog) | Full catalog + `adp`, `ROLL.md`, JSON Schema, validate script |
-| TypeScript | None | `src/lib/swarm/*`, `src/components/swarm/*` |
-| Simulation | Pause-default HTML clock | Zustand `pulse()` + **federated harness** (`scripts/federated-harness.mjs`) |
-| Extra data | `data/trunk-sheaf.json` (legacy stalk shape) | `notebook.html` (discipline plate, not the lattice) |
-| Insight / eval | `contracts/EVAL.md` adversarial read | Same EVAL + `insight.ts` repairs/verdict + operad/JEV in contract |
+| [cell-sheaf-swarm](https://github.com/manutej/cell-sheaf-swarm) | Contract schema, validation, TS kernel, React observatory, swarm clock | Contracts, schema, pulse logic, CI |
+| [cell-sheaf](https://github.com/manutej/cell-sheaf) | HTML design template (`template/`), GitHub Pages entry | Never restyle `tokens.css`; swap sheaf JSON; mirror kernel on release |
 
-## Overlap (keep one source of truth)
+## Side-by-side (quick diff)
 
-1. **`template/`** — Nearly identical; swarm is canonical (schema docs, CI). Sync script: copy swarm → sheaf on release tags.
-2. **`contracts/*.sheaf.json`** — Swarm owns schema validation; sheaf ships a **read-only mirror** of published specimens for Pages demos.
-3. **Glue semantics** — `ok | strange | broken | missing`, gold = earned `onTrunk`, pillars = last-folders.
+| Dimension | cell-sheaf | cell-sheaf-swarm |
+| --- | --- | --- |
+| Runtime | Static Pages (`volume.boot.js`) | Pages + `observatory/` Vite shell for `SwarmApp` |
+| Contracts | Pages catalog subset | Full catalog + `adp`, schema, ROLL |
+| Simulation | Pause-default HTML clock | Zustand `pulse()` + prototype **federated CLI** (`scripts/federated-harness.mjs`) |
+| Extra | `data/trunk-sheaf.json` (legacy) | `notebook.html`, operad/JEV in swarm specimen |
 
-## Gaps (integration work)
+Overlap: **`template/`**, glue four-status law, gold = earned `onTrunk`, pillars = last-folders. Kernel is canonical for schema and validate.
 
-| Gap | Unified target |
-| --- | --- |
-| React observatory has no dev app | `observatory/` Vite shell loads `SwarmApp` |
-| HTML template vs TS insight diverge | Shared repair ranking: port `insight.ts` tests to boot or bundle a thin JS build |
-| Two repos drift on `tokens.css` | Single release artifact: npm package `@cell-sheaf/kernel` exporting contracts + validate + harness |
-| `lattice-ops` ρ is **broken** in specimen | MVP closes loop: federation run → report → human fixes contract → re-validate |
-| No meta-learning persistence | `.meta-learning/federation.jsonl` + `last-report.json` from harness |
+## Workspace `/agent`
 
-## Recommended unified scope
+The `/agent` directory in Cloud Agent environments holds **two sibling clones** under `repos/`. It is not a monorepo — no shared root `package.json`. Use it to run cross-repo plans.
 
-**One product:** *Cell-Sheaf Observatory* — read any sheaf contract, see where work is blocked, run federated agent loops, export rolls.
+- **Kernel docs** (this repo): `docs/INTEGRATION.md`, plans, ideation.
+- **Surface docs** (cell-sheaf): `docs/README.md` hub, `SWARM_KERNEL_PIN.json`, contract-release CI — see branch `cursor/contract-release-bus-50e6`.
 
-- **Publish layer:** cell-sheaf (or merged repo `template/` + Pages) for zero-install readers.
-- **Kernel layer:** cell-sheaf-swarm (contracts, validate, TS, federation CLI).
-- **MVP loop:** validate → federated run → eval seats → meta-learn weights → observatory UI shows verdict.
+## Sync procedure (target state)
 
-## Federation architecture (implemented)
+1. Merge contract changes in **cell-sheaf-swarm**; `node scripts/validate-sheaf.mjs` green.
+2. Tag release `vX.Y.Z`.
+3. Open PR in **cell-sheaf** copying `contracts/` and `template/` from that tag (or automated sync when Phase 4 lands).
+4. Bump surface `SWARM_KERNEL_PIN.json` to that tag/commit; surface CI validates and checks byte parity (see cell-sheaf `check-kernel-sync.mjs`).
+
+Catalog drift policy: see cell-sheaf `docs/CATALOG_DRIFT.md` (e.g. `adp.trunk` kernel-only until mirrored).
+
+## Federated loop
+
+**Target (MVP plan):** Extract `pulse-core` from `store.ts`, worker adapters, eval findings on sheaf JSON — see `docs/plans/2026-10-04-unified-integration-mvp-plan.md` and `docs/IMPLEMENTATION_OUTLINE.md`.
+
+**Prototype today:** Three federated cells tick in parallel; coordinator runs four-seat eval (`contracts/EVAL.md`) and meta-learning weights on blocks.
+
+```sh
+npm run federation:run
+# .meta-learning/federation.jsonl · last-report.json
+```
 
 ```
 ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
 │ cell-core   │  │ cell-apps   │  │ cell-mem    │
-│ pulse tick  │  │ pulse tick  │  │ pulse tick  │
 └──────┬──────┘  └──────┬──────┘  └──────┬──────┘
-       │                │                │
        └────────────────┼────────────────┘
                         ▼
-              ┌──────────────────┐
-              │ Coordinator      │
-              │ evalSeats (×4)   │
-              │ metaLearn weights│
-              └──────────────────┘
+              evalSeats (×4) · metaLearn
 ```
 
-Run: `npm run federation:run` (default `contracts/swarm.sheaf.json`, 48 rounds).
+Next engineering step per outline: **Phase 1** headless `pulse-core` + `pulse-run.mjs` CLI (replace duplicated logic in federated harness).
+
+## Related artifacts
+
+| Artifact | Path |
+| --- | --- |
+| Ideation (research) | `docs/ideation/2026-10-04-unified-cell-sheaf-integration-ideation.html` |
+| Ideation (agent run) | `docs/ideation/2026-10-04-cell-sheaf-unification-ideation.html` |
+| Strategy draft | `docs/UNIFIED_STRATEGY_DRAFT.md` |
+| Strategy (house format) | `STRATEGY.md` |
+| MVP plan | `docs/plans/2026-10-04-unified-integration-mvp-plan.md` |
+| Implementation outline | `docs/IMPLEMENTATION_OUTLINE.md` |
+| Observatory plan (superseded by MVP plan) | `docs/plans/2026-10-04-unified-observatory-unified-plan.md` |

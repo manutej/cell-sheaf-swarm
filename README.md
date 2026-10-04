@@ -77,17 +77,18 @@ node scripts/validate-sheaf.mjs
 
 CI runs the same command on every push (`.github/workflows/sheaf.yml`).
 
-## Federated running loop
+## Integration
 
-Three cell loops (core/lib, app, mem) tick in parallel; a coordinator runs **four-seat eval** (`contracts/EVAL.md`) and **meta-learning** weights on block events.
+Twin repo **cell-sheaf** (HTML template / Pages) and this kernel stay aligned via contract sync — [`docs/INTEGRATION.md`](docs/INTEGRATION.md), MVP plan [`docs/plans/2026-10-04-unified-integration-mvp-plan.md`](docs/plans/2026-10-04-unified-integration-mvp-plan.md), tasks [`docs/IMPLEMENTATION_OUTLINE.md`](docs/IMPLEMENTATION_OUTLINE.md).
+
+## Federated running loop (prototype)
 
 ```sh
 npm test
 npm run federation:run
-# Report: .meta-learning/last-report.json
 ```
 
-Integration map for [manutej/cell-sheaf](https://github.com/manutej/cell-sheaf): [`docs/INTEGRATION.md`](docs/INTEGRATION.md). Product direction: [`STRATEGY.md`](STRATEGY.md).
+Three cell loops + four-seat eval + meta-learning log (see INTEGRATION.md). Full worker-adapter federation is phased in the outline.
 
 ## Observatory (React dev shell)
 
@@ -95,6 +96,6 @@ Integration map for [manutej/cell-sheaf](https://github.com/manutej/cell-sheaf):
 npm run observatory:dev
 ```
 
-Vite app in `observatory/` loads `src/components/swarm/SwarmApp.tsx` against catalog specimens.
+Vite app in `observatory/` loads `SwarmApp.tsx`. Product direction: [`STRATEGY.md`](STRATEGY.md) and [`docs/UNIFIED_STRATEGY_DRAFT.md`](docs/UNIFIED_STRATEGY_DRAFT.md).
 
 License: MIT.
