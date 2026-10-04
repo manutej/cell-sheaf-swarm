@@ -83,6 +83,8 @@ Twin repo **cell-sheaf** (HTML template / Pages) and this kernel stay aligned vi
 
 ## Federated running loop (prototype)
 
+Run from **this repo root** (`cell-sheaf-swarm`). There is no `package.json` at `/agent` alone — in Cloud Agent workspaces use `cd repos/cell-sheaf-swarm` or `npm run … --prefix path/to/cell-sheaf-swarm`.
+
 ```sh
 npm test
 npm run pulse:run -- --graph contracts/swarm.sheaf.json --ticks 20 --adapter local
