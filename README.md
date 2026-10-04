@@ -85,6 +85,7 @@ Twin repo **cell-sheaf** (HTML template / Pages) and this kernel stay aligned vi
 
 ```sh
 npm test
+npm run pulse:run -- --graph contracts/swarm.sheaf.json --ticks 20
 npm run federation:run
 ```
 
