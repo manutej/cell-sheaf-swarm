@@ -7,5 +7,6 @@ screenshots
 artifacts
 attachments
 .meta-learning
+.swarm-worker
 observatory/node_modules
 observatory/dist
