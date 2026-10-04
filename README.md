@@ -77,4 +77,8 @@ node scripts/validate-sheaf.mjs
 
 CI runs the same command on every push (`.github/workflows/sheaf.yml`).
 
+## Integration
+
+Twin repo **cell-sheaf** (HTML template / Pages) and this kernel stay aligned via contract sync — see [`docs/INTEGRATION.md`](docs/INTEGRATION.md) and the unified MVP plan in [`docs/plans/`](docs/plans/).
+
 License: MIT.

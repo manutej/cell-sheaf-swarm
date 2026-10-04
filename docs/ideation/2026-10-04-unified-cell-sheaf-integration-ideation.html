@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ideation: unified cell-sheaf integration</title>
+<style>
+:root{--paper:#c1c494;--ink:#253122;--ube:#501345;--ok:#437742;--bad:#ae5224;--muted:#6d6a55}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,sans-serif;line-height:1.5;padding:32px 20px 64px}
+.wrap{max-width:820px;margin:0 auto}
+.meta{font-size:13px;color:var(--muted);border-bottom:1px solid var(--ink);padding-bottom:12px;margin-bottom:24px}
+h1{font-size:1.75rem;margin:0 0 8px;color:var(--ube)}
+h2{font-size:1.2rem;margin:28px 0 12px;border-top:1px solid #8a8768;padding-top:20px}
+.card{border:1px solid var(--ink);padding:16px 18px;margin:14px 0;background:#d4d7a8}
+.card h3{margin:0 0 8px;font-size:1.05rem}
+.tag{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.jump a{margin-right:12px;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+th,td{border:1px solid var(--ink);padding:6px 8px;text-align:left}
+th{background:#b7b48a}
+svg{display:block;margin:12px 0;max-width:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="meta"><strong>Date:</strong> 2026-10-04 · <strong>Topic:</strong> unified-cell-sheaf-integration · <strong>Focus:</strong> federated running loops + eval/learning harness · <strong>Mode:</strong> repo-grounded (cell-sheaf + cell-sheaf-swarm + /agent workspace)</p>
+
+<h1>Unified integration ideation</h1>
+<p>Ranked survivors from 28 raw candidates (21 rejected). Grounded in README split, <code>swarm.sheaf.json</code> trunk specimen, <code>store.ts</code> clock law, and contract validation CI.</p>
+
+<h2>Grounding context</h2>
+<ul>
+<li><strong>/agent</strong> is a thin workspace folder containing only <code>repos/cell-sheaf</code> and <code>repos/cell-sheaf-swarm</code> — not a monorepo, no shared package manager or orchestration yet.</li>
+<li><strong>cell-sheaf-swarm</strong> is the published kernel: SheafGraph schema, ROLL law, validate script + CI, TypeScript types/load/insight/store, React observatory components, extra contracts (<code>adp.sheaf.json</code>, <code>ROLL.md</code>, schema).</li>
+<li><strong>cell-sheaf</strong> is the HTML design template + GitHub Pages surface; README explicitly points kernel readers to swarm. Contracts largely mirror swarm but catalog lacks <code>adp</code>; no TS, no CI, no schema file. Adds <code>data/trunk-sheaf.json</code>.</li>
+<li><strong>Shared metaphor:</strong> JSON sheaf is source of truth; restriction <code>status</code> is glue; gold (<code>onTrunk</code>) is earned; operad node <code>q0</code> asks compose ≟ collapse; agents pulse on ρ with block/commit semantics in <code>pulse()</code>.</li>
+<li><strong>Integration pain already modeled:</strong> broken <code>orchestr → lattice-ops</code>, strange feeds, missing trunk→wiki — the specimen is a map of real federation blockers.</li>
+</ul>
+
+<h2>Topic axes</h2>
+<ol>
+<li>Contract authority &amp; repo sync boundaries</li>
+<li>Federated runtime / agent loop orchestration</li>
+<li>Evaluation, learning, and operad gates</li>
+<li>Presentation parity (static HTML vs React observatory)</li>
+<li>Workspace packaging (/agent as integration layer)</li>
+</ol>
+
+<h2>Ranked ideas</h2>
+<p class="jump"><strong>Jump:</strong>
+<a href="#i1">1 Kernel/surface split</a>
+<a href="#i2">2 Headless pulse runner</a>
+<a href="#i3">3 Eval harness v0</a>
+<a href="#i4">4 Contract release bus</a>
+<a href="#i5">5 Operad merge gate</a>
+<a href="#i6">6 Insight in HTML boot</a>
+<a href="#i7">7 /agent meta-orchestrator</a>
+</p>
+
+<article class="card" id="i1">
+<p class="tag">Axis 1 · Rank 1 · Confidence 88% · Complexity Medium</p>
+<h3>1. Formalize kernel + surface split (release-synced sisters)</h3>
+<p><strong>Description:</strong> Treat cell-sheaf-swarm as the single authority for <code>contracts/</code>, schema, validate, and TS kernel; cell-sheaf as a downstream mirror of <code>template/</code> + catalog subset for Pages-only consumers. Automate sync on semver tags (copy contracts + template, run validate in both).</p>
+<p><strong>Basis:</strong> <code>direct:</code> cell-sheaf README line 7 — “Kernel + swarm clock + contract schema: manutej/cell-sheaf-swarm”. <code>direct:</code> swarm README line 9 — “Sister surface: manutej/cell-sheaf”.</p>
+<p><strong>Rationale:</strong> Matches author intent; removes drift (catalog, ROLL.md, adp specimen, tokens.css diff) without forcing a monorepo.</p>
+<p><strong>Downsides:</strong> Two repos forever; sync automation must be maintained; contributors need a clear “edit here first” rule.</p>
+<svg viewBox="0 0 520 120" height="100" aria-label="kernel to surface sync">
+<text x="10" y="30" font-size="12">cell-sheaf-swarm (kernel)</text>
+<rect x="10" y="40" width="140" height="50" fill="#437742" opacity=".35" stroke="#253122"/>
+<text x="20" y="68" font-size="11">contracts · validate · TS</text>
+<text x="280" y="30" font-size="12">cell-sheaf (surface)</text>
+<rect x="280" y="40" width="140" height="50" fill="#fdc57e" opacity=".5" stroke="#253122"/>
+<text x="290" y="68" font-size="11">template · Pages</text>
+<path d="M150 65 H280" stroke="#253122" marker-end="url(#a)"/>
+<defs><marker id="a" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#253122"/></marker></defs>
+<text x="165" y="58" font-size="10">tag sync</text>
+</svg>
+</article>
+
+<article class="card" id="i2">
+<p class="tag">Axis 2 · Rank 2 · Confidence 82% · Complexity High</p>
+<h3>2. Headless federated pulse runner (CLI)</h3>
+<p><strong>Description:</strong> Extract <code>pulse()</code> clock law from Zustand into a Node CLI that reads a sheaf JSON, emits events, and dispatches work to pluggable backends (local shell, GitHub Actions matrix job, Cursor cloud agent webhook) keyed by agent <code>role</code> and <code>edgeId</code>.</p>
+<p><strong>Basis:</strong> <code>direct:</code> <code>store.ts</code> documents “Clock law: idle → launch → residual on ρ → commit or block”. <code>direct:</code> swarm specimen lists orchestrator, eval, lattice-ops pillars as separate “folders”.</p>
+<p><strong>Rationale:</strong> Turns decorative simulation into federated MVP without rewriting the visual layer first.</p>
+<p><strong>Downsides:</strong> Backend adapters are real engineering; security for remote dispatch; must not violate “no shared mutable” law in operad prompts.</p>
+</article>
+
+<article class="card" id="i3">
+<p class="tag">Axis 3 · Rank 3 · Confidence 85% · Complexity Medium</p>
+<h3>3. Evaluation harness v0 (four seats → structured findings)</h3>
+<p><strong>Description:</strong> Promote <code>EVAL.md</code> adversarial seats (user, operator, craft, red) into first-class <code>findings[]</code> on the sheaf with severities; wire reviewer agents in <code>pulse()</code> to increment JEV and attach seat verdicts; validate with schema + golden fixture tests.</p>
+<p><strong>Basis:</strong> <code>direct:</code> identical EVAL.md in both repos. <code>direct:</code> <code>swarm.sheaf.json</code> operad <code>q1</code> JEV battery and eval pillar folder <code>multi-agent-eval</code>.</p>
+<p><strong>Rationale:</strong> Learning loop closes when eval outputs propose ρ status patches humans accept.</p>
+<p><strong>Downsides:</strong> Risk of theater if findings are not tied to executable checks; needs human-in-loop for <code>strange</code> ρ.</p>
+</article>
+
+<article class="card" id="i4">
+<p class="tag">Axis 1 · Rank 4 · Confidence 80% · Complexity Low</p>
+<h3>4. Contract release bus (validate-as-integration-boundary)</h3>
+<p><strong>Description:</strong> Single CI truth: swarm validates on push; cell-sheaf CI (add workflow) checks out pinned swarm tag or submodule SHA and runs the same <code>validate-sheaf.mjs</code>. PRs that change contracts without green validate cannot merge.</p>
+<p><strong>Basis:</strong> <code>direct:</code> swarm has <code>.github/workflows/sheaf.yml</code>; cell-sheaf has none. <code>direct:</code> catalog drift (adp missing in cell-sheaf).</p>
+<p><strong>Rationale:</strong> Cheapest integration proof before runtime federation.</p>
+<p><strong>Downsides:</strong> Does not run agents; only guards JSON glue.</p>
+</article>
+
+<article class="card" id="i5">
+<p class="tag">Axis 3 · Rank 5 · Confidence 72% · Complexity Medium</p>
+<h3>5. Operad q0 as merge / deploy gate</h3>
+<p><strong>Description:</strong> Map operad <code>compose</code>/<code>collapse</code>/<code>oc</code> fields to CI checks: composed partial artifacts (JEV, GNOCIS, glue lint) must match collapsed trunk verdict before a restriction flips to <code>ok</code> or a release tag ships.</p>
+<p><strong>Basis:</strong> <code>direct:</code> operad node q0 question in swarm.sheaf.json. <code>reasoned:</code> aligns “gold is earned” with automation rather than visual-only gold.</p>
+<p><strong>Rationale:</strong> Gives a crisp MVP definition of “trunk closed.”</p>
+<p><strong>Downsides:</strong> Requires measurable compose/collapse functions; easy to over-formalize early.</p>
+</article>
+
+<article class="card" id="i6">
+<p class="tag">Axis 4 · Rank 6 · Confidence 78% · Complexity Medium</p>
+<h3>6. Insight parity — port repair ranking to <code>volume.boot.js</code></h3>
+<p><strong>Description:</strong> Share one repair/verdict algorithm: either bundle <code>insight.ts</code> via esbuild for the static template or duplicate minimally with shared test vectors from validate tests.</p>
+<p><strong>Basis:</strong> <code>direct:</code> EVAL.md “verdict is single-fix counterfactual” matches <code>insight.ts</code> repair ranking. HTML views still use instrument names per EVAL critique.</p>
+<p><strong>Rationale:</strong> Integrated product feels one-minded in browser and observatory.</p>
+<p><strong>Downsides:</strong> JS bundle size; temptation to fork tokens.css — forbidden by ROLL law.</p>
+</article>
+
+<article class="card" id="i7">
+<p class="tag">Axis 5 · Rank 7 · Confidence 75% · Complexity Low</p>
+<h3>7. /agent meta-orchestrator (pinned twin repos)</h3>
+<p><strong>Description:</strong> Add <code>/agent/README.md</code>, <code>manifest.json</code> pinning both SHAs, and docs/plans — workspace for Cloud Agent runs without merging git histories.</p>
+<p><strong>Basis:</strong> <code>direct:</code> /agent contains only <code>repos/*</code> checkouts today.</p>
+<p><strong>Rationale:</strong> Matches how this integration task was invoked; low risk entry to federated docs and cross-repo PRs.</p>
+<p><strong>Downsides:</strong> Not a substitute for package publishing; may confuse if treated as third product repo.</p>
+</article>
+
+<h2>Rejection summary (sample)</h2>
+<table>
+<tr><th>Idea</th><th>Reason</th></tr>
+<tr><td>Full monorepo merge</td><td>scope overrun — contradicts sister-repo positioning</td></tr>
+<tr><td>Deprecate HTML template for React-only</td><td>not grounded — README elevates template as “visual law”</td></tr>
+<tr><td>Real-time WebSocket mesh for all ρ</td><td>too expensive vs MVP; no existing transport</td></tr>
+<tr><td>Auto-flip strange→ok via LLM</td><td>violates glue law (“needs a person”)</td></tr>
+<tr><td>npm-only cell-sheaf package</td><td>duplicate — swarm already declares npm files</td></tr>
+<tr><td>Vercel-hosted observatory as primary</td><td>external prior art misaligned — Pages-first today</td></tr>
+<tr><td>Merge adp + swarm products</td><td>subject-replacement — ADP is rolled specimen, not integration core</td></tr>
+<tr><td>Duplicate CI in both without sync source</td><td>duplicates weaker idea vs #4 release bus</td></tr>
+</table>
+<p><em>21 total rejected; full list available on request during brainstorm.</em></p>
+
+<h2>Top pick</h2>
+<p><strong>#1 Kernel/surface split + #4 Contract release bus</strong> — implements author intent immediately, unblocks #2/#3 with a stable contract spine.</p>
+
+<h2>Next steps (ce-ideate menu)</h2>
+<ol>
+<li>Open this HTML in a browser (path below).</li>
+<li><strong>ce-brainstorm</strong> — recommended seed: <em>Headless federated pulse runner with eval harness v0 on contract release bus</em>.</li>
+<li>Discuss/refine survivors before brainstorming.</li>
+<li>Done — keep file.</li>
+</ol>
+</div>
+</body>
+</html>
