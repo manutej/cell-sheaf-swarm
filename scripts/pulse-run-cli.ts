@@ -1,18 +1,29 @@
 import { readFileSync } from "node:fs";
+import { createGitHubActionsAdapter } from "./adapters/github-actions-adapter.ts";
 import { parseSheaf } from "../src/lib/swarm/load-sheaf.ts";
 import { defaultPulseRng, pulseStep, seedPulseFromGraph, type PulseRng } from "../src/lib/swarm/pulse-core.ts";
+import { localShellAdapter, simulateAdapter, type WorkerAdapter } from "../src/lib/swarm/worker.ts";
 
 function parseArgs(argv: string[]) {
   let graphPath = "";
   let ticks = 20;
   let json = false;
+  let adapterName = "simulate";
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--graph") graphPath = argv[++i] ?? "";
     else if (a === "--ticks") ticks = Number(argv[++i] ?? 20);
     else if (a === "--json") json = true;
+    else if (a === "--adapter") adapterName = argv[++i] ?? "simulate";
   }
-  return { graphPath, ticks, json };
+  return { graphPath, ticks, json, adapterName };
+}
+
+function resolveAdapter(name: string): WorkerAdapter | undefined {
+  if (name === "none" || name === "simulate") return simulateAdapter;
+  if (name === "local") return localShellAdapter;
+  if (name === "github") return createGitHubActionsAdapter();
+  return simulateAdapter;
 }
 
 /** Deterministic RNG for snapshot tests (--json with SHEAF_PULSE_SEED=1). */
@@ -29,11 +40,12 @@ function seededRng(seed: number): PulseRng {
   };
 }
 
-const { graphPath, ticks, json } = parseArgs(process.argv.slice(2));
+const { graphPath, ticks, json, adapterName } = parseArgs(process.argv.slice(2));
 if (!graphPath) {
-  console.error("usage: pulse-run --graph <path> [--ticks N] [--json]");
+  console.error("usage: pulse-run --graph <path> [--ticks N] [--json] [--adapter simulate|local|github]");
   process.exit(2);
 }
+const adapter = resolveAdapter(adapterName);
 
 const raw = JSON.parse(readFileSync(graphPath, "utf8"));
 const graph = parseSheaf(raw);
@@ -45,7 +57,7 @@ const emitted: { tick: number; kind: string }[] = [];
 
 for (let i = 0; i < ticks; i++) {
   const prevLen = state.events.length;
-  state = pulseStep(state, graph, rng);
+  state = pulseStep(state, graph, { rng, adapter });
   const newEvents = state.events.slice(0, state.events.length - prevLen);
   for (const e of newEvents) {
     emitted.push({ tick: state.tick, kind: e.kind });
@@ -54,7 +66,7 @@ for (let i = 0; i < ticks; i++) {
 }
 
 if (!json) {
-  console.log(`pulse-run · ${graph.id} · ${ticks} ticks · JEV ${state.jevDone}/128`);
+  console.log(`pulse-run · ${graph.id} · ${ticks} ticks · adapter ${adapter?.name} · JEV ${state.jevDone}/128`);
   console.log(
     emitted
       .map((e) => `${e.tick}:${e.kind}`)

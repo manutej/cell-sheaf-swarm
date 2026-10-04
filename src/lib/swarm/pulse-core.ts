@@ -1,4 +1,5 @@
 import type { Agent, Commit, GlueStatus, OperadNode, SheafGraph, SwarmEvent } from "./types";
+import { DISPATCH_ROLES, type WorkerAdapter } from "./worker";
 
 export const MAX_PULSE_EVENTS = 48;
 
@@ -61,12 +62,24 @@ function pushEvent(
   return [next, ...events].slice(0, MAX_PULSE_EVENTS);
 }
 
+export type PulseStepOptions = {
+  rng?: PulseRng;
+  /** When set, worker/planner inflight completion uses adapter instead of raw ρ only. */
+  adapter?: WorkerAdapter;
+};
+
 /** One swarm clock tick — pure, no React/Zustand. */
 export function pulseStep(
   state: PulseClockState,
   graph: SheafGraph,
-  rng: PulseRng = defaultPulseRng(),
+  options: PulseStepOptions | PulseRng = {},
 ): PulseClockState {
+  const opts: PulseStepOptions =
+    typeof options === "object" && options !== null && "eventId" in options
+      ? { rng: options as PulseRng }
+      : (options as PulseStepOptions);
+  const rng = opts.rng ?? defaultPulseRng();
+  const adapter = opts.adapter;
   const tick = state.tick + 1;
   const restrictions = graph.restrictions;
   const findings = graph.findings ?? [];
@@ -83,7 +96,39 @@ export function pulseStep(
       a.ticksLeft = (a.ticksLeft ?? 0) - 1;
       if (a.ticksLeft <= 0) {
         const edge = restrictions.find((r) => r.id === a.edgeId);
-        const st = edge?.status ?? "ok";
+        let st = edge?.status ?? "ok";
+        if (adapter && DISPATCH_ROLES.has(a.role)) {
+          const result = adapter.run({
+            agentId: a.id,
+            role: a.role,
+            edgeId: a.edgeId ?? null,
+            task: a.task,
+            livesAt: a.livesAt,
+            edgeStatus: st,
+          });
+          if (result.status === "blocked") {
+            a.state = "blocked";
+            events = pushEvent(
+              events,
+              rng,
+              "block",
+              result.reason ?? `${a.id} worker blocked`,
+              st === "ok" ? "strange" : st,
+            );
+            continue;
+          }
+          a.state = "done";
+          a.t = 1;
+          if (a.role === "worker") jevDone = Math.min(128, jevDone + 3);
+          events = pushEvent(
+            events,
+            rng,
+            "oc",
+            `${a.id} ${adapter.name} · ${result.reason ?? "worker ok"}`,
+            "ok",
+          );
+          continue;
+        }
         if (st === "ok") {
           a.state = "done";
           a.t = 1;

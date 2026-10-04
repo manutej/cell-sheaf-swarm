@@ -13,7 +13,7 @@
     "sheaf:validate": "node scripts/validate-sheaf.mjs",
     "federation:run": "node scripts/run-federated-loop.mjs",
     "pulse:run": "node scripts/pulse-run.mjs",
-    "test": "node --test scripts/validate-sheaf.test.mjs scripts/federated-loop.test.mjs scripts/pulse-run.test.mjs",
+    "test": "node --test scripts/validate-sheaf.test.mjs scripts/federated-loop.test.mjs scripts/pulse-run.test.mjs scripts/worker-adapter.test.mjs",
     "observatory:dev": "npm run dev --prefix observatory",
     "observatory:build": "npm run build --prefix observatory"
   },

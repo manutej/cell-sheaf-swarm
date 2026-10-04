@@ -107,7 +107,7 @@ export const useSwarm = create<SwarmState>((set, get) => ({
         operad: s.operad,
       },
       s.graph,
-      defaultPulseRng(),
+      { rng: defaultPulseRng() },
     );
     set(next);
   },
