@@ -200,6 +200,12 @@ const DATA = {"title":"Cellular sheaves — paper stalks","pillars":[{"id":"pape
       "letter-spacing": "0.16em", fill: DIM, text: "VERDICT" }, D.sVerdict);
     D.verdictText = el("text", { x: 60, y: 62, "font-size": 16, fill: INK, text: DATA.verdict }, D.sVerdict);
     fit(D.verdictText, VW - 120);
+    if (DATA.banner) {
+      D.bannerText = el("text", {
+        x: 60, y: 96, "font-size": 12, fill: DIM, text: DATA.banner,
+      }, D.sVerdict);
+      fit(D.bannerText, VW - 120);
+    }
     setO(D.sVerdict, 0);
 
     D.sWhy = g(D.detailLayer);
