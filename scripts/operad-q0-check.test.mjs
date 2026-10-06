@@ -1,8 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { tmpdir } from "node:os";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { validateFile } from "./validate-sheaf.mjs";
@@ -48,21 +46,24 @@ test("agreed fixture → exit 0", () => {
 });
 
 test("agreed + insufficient JEV → exit 1", () => {
-  const dir = mkdtempSync(join(tmpdir(), "q0-jev-"));
-  const state = join(dir, "state.json");
-  writeFileSync(state, JSON.stringify({ jevDone: 10 }));
+  const state = join(FIX, "jev-state-10.json");
   const r = run([join(FIX, "q0-agreed.sheaf.json"), "--state", state, "--jev", "128"]);
   assert.equal(r.status, 1);
   assert.equal(r.stdout.trim(), "fixture.q0-agreed: q0 pending jev 10/128");
 });
 
 test("agreed + sufficient JEV → exit 0", () => {
-  const dir = mkdtempSync(join(tmpdir(), "q0-jev-"));
-  const state = join(dir, "state.json");
-  writeFileSync(state, JSON.stringify({ jevDone: 128 }));
+  const state = join(FIX, "jev-state-128.json");
   const r = run([join(FIX, "q0-agreed.sheaf.json"), "--state", state, "--jev", "128"]);
   assert.equal(r.status, 0);
   assert.equal(r.stdout.trim(), "fixture.q0-agreed: q0 agreed");
+});
+
+test("non-numeric --jev → exit 2", () => {
+  const state = join(FIX, "jev-state-128.json");
+  const r = run([join(FIX, "q0-agreed.sheaf.json"), "--state", state, "--jev", "abc"]);
+  assert.equal(r.status, 2);
+  assert.match(r.stderr, /usage:/);
 });
 
 test("missing file → exit 2", () => {

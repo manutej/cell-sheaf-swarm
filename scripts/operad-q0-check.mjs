@@ -16,7 +16,14 @@ function parseArgv(argv) {
       continue;
     }
     if (a === "--jev") {
-      jevRequired = Number.parseInt(argv[++i], 10);
+      const raw = argv[++i];
+      if (raw === undefined || !/^\d+$/.test(raw)) {
+        return {
+          error:
+            "usage: operad-q0-check.mjs <contract>... [--state <path> --jev <int>]",
+        };
+      }
+      jevRequired = Number.parseInt(raw, 10);
       continue;
     }
     if (a.startsWith("-")) {
@@ -44,11 +51,14 @@ function loadJson(path) {
   }
 }
 
-function composeCollapseOc(q0) {
-  const compose = q0.compose ?? "pending";
-  const collapse = q0.collapse ?? "pending";
-  const oc = q0.oc ?? "pending";
-  return { compose, collapse, oc };
+function effectiveField(v) {
+  if (v === undefined || v === null || v === "") return "pending";
+  return v;
+}
+
+function displayField(v) {
+  if (v === undefined || v === null) return "missing";
+  return v === "" ? "missing" : v;
 }
 
 function fieldPending(v) {
@@ -71,7 +81,9 @@ export function assessQ0(graph, { jevDone, jevRequired } = {}) {
     return { exit: 2, line: `${id}: q0 error (missing q0)` };
   }
 
-  const { compose, collapse, oc } = composeCollapseOc(q0);
+  const compose = effectiveField(q0.compose);
+  const collapse = effectiveField(q0.collapse);
+  const oc = effectiveField(q0.oc);
 
   if (oc === "diverge") {
     return { exit: 1, line: `${id}: q0 diverged` };
@@ -92,7 +104,7 @@ export function assessQ0(graph, { jevDone, jevRequired } = {}) {
 
   return {
     exit: 1,
-    line: `${id}: q0 pending (compose=${compose}, collapse=${collapse}, oc=${oc})`,
+    line: `${id}: q0 pending (compose=${displayField(q0.compose)}, collapse=${displayField(q0.collapse)}, oc=${oc})`,
   };
 }
 
