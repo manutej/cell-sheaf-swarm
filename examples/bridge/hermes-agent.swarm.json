@@ -1,0 +1,1882 @@
+{
+  "schema": "sheaf-graph/2020-12",
+  "id": "hermes-agent",
+  "title": "Hermes Agent digest",
+  "pillars": [
+    {
+      "id": "run-agent",
+      "folder": "run_agent.py AIAgent",
+      "kind": "core",
+      "known": true,
+      "dim": 12,
+      "x": 120,
+      "z": 0
+    },
+    {
+      "id": "prompt-builder",
+      "folder": "prompt-builder",
+      "kind": "core",
+      "known": true,
+      "dim": 12,
+      "x": 117.54,
+      "z": 24.16
+    },
+    {
+      "id": "tool-registry",
+      "folder": "tool-registry",
+      "kind": "core",
+      "known": true,
+      "dim": 12,
+      "x": 110.27,
+      "z": 47.32
+    },
+    {
+      "id": "session-db",
+      "folder": "hermes_state.py SessionDB",
+      "kind": "core",
+      "known": true,
+      "dim": 12,
+      "x": 98.49,
+      "z": 68.55
+    },
+    {
+      "id": "runtime-provider",
+      "folder": "runtime-provider",
+      "kind": "core",
+      "known": true,
+      "dim": 12,
+      "x": 82.68,
+      "z": 86.98
+    },
+    {
+      "id": "profile-isolation",
+      "folder": "approval + HERMES_HOME",
+      "kind": "core",
+      "known": true,
+      "dim": 12,
+      "x": 63.48,
+      "z": 101.84
+    },
+    {
+      "id": "conversation-loop",
+      "folder": "conversation-loop",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": 41.68,
+      "z": 112.53
+    },
+    {
+      "id": "prompt-caching",
+      "folder": "prompt-caching",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": 18.17,
+      "z": 118.62
+    },
+    {
+      "id": "context-compressor",
+      "folder": "context-compressor",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -6.08,
+      "z": 119.85
+    },
+    {
+      "id": "memory-manager",
+      "folder": "memory-manager",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -30.08,
+      "z": 116.17
+    },
+    {
+      "id": "skill-commands",
+      "folder": "skill-commands",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -52.85,
+      "z": 107.74
+    },
+    {
+      "id": "curator",
+      "folder": "curator",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -73.45,
+      "z": 94.89
+    },
+    {
+      "id": "toolsets",
+      "folder": "toolsets.py",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -91.05,
+      "z": 78.16
+    },
+    {
+      "id": "hermes-state-search",
+      "folder": "hermes_state_search.py",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -104.92,
+      "z": 58.24
+    },
+    {
+      "id": "plugin-manager",
+      "folder": "plugin-manager",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -114.5,
+      "z": 35.92
+    },
+    {
+      "id": "delegate-tool",
+      "folder": "delegate-tool",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -119.38,
+      "z": 12.14
+    },
+    {
+      "id": "hermes-cli",
+      "folder": "hermes-cli",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -119.38,
+      "z": -12.14
+    },
+    {
+      "id": "gateway-runner",
+      "folder": "gateway-runner",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -114.5,
+      "z": -35.92
+    },
+    {
+      "id": "cron-scheduler",
+      "folder": "cron-scheduler",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -104.92,
+      "z": -58.24
+    },
+    {
+      "id": "acp-server",
+      "folder": "acp-server",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -91.05,
+      "z": -78.16
+    },
+    {
+      "id": "mcp-serve",
+      "folder": "mcp_serve.py",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -73.45,
+      "z": -94.89
+    },
+    {
+      "id": "desktop-app",
+      "folder": "desktop-app",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -52.85,
+      "z": -107.74
+    },
+    {
+      "id": "batch-runner",
+      "folder": "batch_runner.py",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -30.08,
+      "z": -116.17
+    },
+    {
+      "id": "platforms-messaging",
+      "folder": "platforms-messaging",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": -6.08,
+      "z": -119.85
+    },
+    {
+      "id": "backends-terminal",
+      "folder": "backends-terminal",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": 18.17,
+      "z": -118.62
+    },
+    {
+      "id": "backends-browser",
+      "folder": "backends-browser",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": 41.68,
+      "z": -112.53
+    },
+    {
+      "id": "bundled-skills",
+      "folder": "bundled-skills",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": 63.48,
+      "z": -101.84
+    },
+    {
+      "id": "optional-skills",
+      "folder": "optional-skills",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": 82.68,
+      "z": -86.98
+    },
+    {
+      "id": "plugins-memory",
+      "folder": "plugins-memory",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": 98.49,
+      "z": -68.55
+    },
+    {
+      "id": "plugins-model-providers",
+      "folder": "plugins-model-providers",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": 110.27,
+      "z": -47.32
+    },
+    {
+      "id": "docs-site",
+      "folder": "docs-site",
+      "kind": "lib",
+      "known": false,
+      "dim": 12,
+      "x": 117.54,
+      "z": -24.16
+    }
+  ],
+  "restrictions": [
+    {
+      "id": "e0",
+      "source": "hermes-cli",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e1",
+      "source": "gateway-runner",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e2",
+      "source": "cron-scheduler",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e3",
+      "source": "acp-server",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e4",
+      "source": "batch-runner",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e5",
+      "source": "conversation-loop",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "identity",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e6",
+      "source": "prompt-builder",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e7",
+      "source": "prompt-caching",
+      "target": "prompt-builder",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e8",
+      "source": "context-compressor",
+      "target": "prompt-builder",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e9",
+      "source": "memory-manager",
+      "target": "session-db",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e10",
+      "source": "skill-commands",
+      "target": "prompt-builder",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e11",
+      "source": "curator",
+      "target": "skill-commands",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e12",
+      "source": "toolsets",
+      "target": "tool-registry",
+      "relation": "restricts",
+      "kind": "identity",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e13",
+      "source": "hermes-state-search",
+      "target": "session-db",
+      "relation": "restricts",
+      "kind": "identity",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e14",
+      "source": "plugin-manager",
+      "target": "tool-registry",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e15",
+      "source": "delegate-tool",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e16",
+      "source": "mcp-serve",
+      "target": "tool-registry",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e17",
+      "source": "platforms-messaging",
+      "target": "gateway-runner",
+      "relation": "restricts",
+      "kind": "identity",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e18",
+      "source": "backends-terminal",
+      "target": "tool-registry",
+      "relation": "restricts",
+      "kind": "identity",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e19",
+      "source": "backends-browser",
+      "target": "tool-registry",
+      "relation": "restricts",
+      "kind": "identity",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e20",
+      "source": "bundled-skills",
+      "target": "skill-commands",
+      "relation": "restricts",
+      "kind": "identity",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e21",
+      "source": "docs-site",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e22",
+      "source": "runtime-provider",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e23",
+      "source": "profile-isolation",
+      "target": "run-agent",
+      "relation": "restricts",
+      "kind": "projection",
+      "status": "strange",
+      "residual": 0
+    },
+    {
+      "id": "e24",
+      "source": "optional-skills",
+      "target": "prompt-builder",
+      "relation": "restricts",
+      "kind": "identity",
+      "status": "strange",
+      "residual": 0,
+      "note": "Optional pack often never injected."
+    },
+    {
+      "id": "e25",
+      "source": "plugins-memory",
+      "target": "session-db",
+      "relation": "restricts",
+      "kind": "type-aware",
+      "status": "strange",
+      "residual": 0,
+      "note": "Memory plugin can persist outside SessionDB."
+    },
+    {
+      "id": "e26",
+      "source": "desktop-app",
+      "target": "session-db",
+      "relation": "restricts",
+      "kind": "type-aware",
+      "status": "strange",
+      "residual": 0,
+      "note": "Desktop can be a second session writer."
+    },
+    {
+      "id": "e27",
+      "source": "cron-scheduler",
+      "target": "session-db",
+      "relation": "restricts",
+      "kind": "type-aware",
+      "status": "strange",
+      "residual": 0,
+      "note": "Cron starts a fresh AIAgent — lineage skip."
+    },
+    {
+      "id": "e28",
+      "source": "mcp-serve",
+      "target": "profile-isolation",
+      "relation": "restricts",
+      "kind": "type-aware",
+      "status": "strange",
+      "residual": 0,
+      "note": "External MCP can skip the dangerous-command gate."
+    }
+  ],
+  "x-sas": {
+    "pillars": {
+      "run-agent": {
+        "kind": "runtime",
+        "section": [
+          1,
+          0.048,
+          0.5,
+          0.357,
+          0.048,
+          0,
+          0.524,
+          0,
+          0,
+          0.024,
+          0.048,
+          0.048
+        ],
+        "summary": "Pinned loop.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/run_agent.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "prompt-builder": {
+        "title": "agent/prompt_builder.py",
+        "kind": "runtime",
+        "section": [
+          0.031,
+          1,
+          0.031,
+          0,
+          0,
+          0.219,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0.188
+        ],
+        "summary": "Pinned prompt tiers.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/agent/prompt_builder.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "tool-registry": {
+        "title": "tools/registry.py",
+        "kind": "runtime",
+        "section": [
+          0.059,
+          0.248,
+          0.559,
+          0.131,
+          0.081,
+          1,
+          0.014,
+          0.023,
+          0.216,
+          0.045,
+          0.793,
+          0.977
+        ],
+        "summary": "Pinned registry.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/tools/registry.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "session-db": {
+        "kind": "runtime",
+        "section": [
+          0.024,
+          0.008,
+          0,
+          1,
+          0.008,
+          0,
+          0,
+          0.016,
+          0.047,
+          0.016,
+          0.024,
+          0.11
+        ],
+        "summary": "Pinned SessionDB.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/hermes_state.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "runtime-provider": {
+        "title": "hermes_cli/runtime_provider.py",
+        "kind": "runtime",
+        "section": [
+          0.012,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0.024,
+          0,
+          0
+        ],
+        "summary": "Pinned ProviderResolver.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/hermes_cli/runtime_provider.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "profile-isolation": {
+        "kind": "runtime",
+        "section": [
+          0.007,
+          0.033,
+          0.004,
+          0.004,
+          0.04,
+          0.011,
+          0,
+          0.004,
+          0,
+          0.033,
+          0.015,
+          1
+        ],
+        "summary": "Pinned isolation.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/tools/approval.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "conversation-loop": {
+        "title": "agent/conversation_loop.py",
+        "kind": "subsystem",
+        "section": [
+          0.548,
+          0.496,
+          0.143,
+          0.147,
+          0.088,
+          0.147,
+          1,
+          0.044,
+          0.048,
+          0.379,
+          0.482,
+          0.618
+        ],
+        "summary": "Inner turn machine.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/agent/conversation_loop.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "prompt-caching": {
+        "title": "agent/prompt_caching.py",
+        "kind": "subsystem",
+        "section": [
+          0.167,
+          1,
+          0.042,
+          0.25,
+          0.208,
+          0,
+          0,
+          0.042,
+          0,
+          0,
+          0.042,
+          0.208
+        ],
+        "summary": "Anthropic prefix cache.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/agent/prompt_caching.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "context-compressor": {
+        "title": "agent/context_compressor.py",
+        "kind": "subsystem",
+        "section": [
+          0.538,
+          1,
+          0,
+          0.885,
+          0.462,
+          0,
+          0.231,
+          0.115,
+          0,
+          0,
+          0.115,
+          0.077
+        ],
+        "summary": "Lossy summarize.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/agent/context_compressor.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "memory-manager": {
+        "title": "agent/memory_manager.py",
+        "kind": "subsystem",
+        "section": [
+          0.25,
+          0.583,
+          0.333,
+          0,
+          0.667,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "summary": "MEMORY.md through SessionDB.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/agent/memory_manager.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "skill-commands": {
+        "title": "agent/skill_commands.py",
+        "kind": "subsystem",
+        "section": [
+          0,
+          0.25,
+          0,
+          0,
+          0.05,
+          1,
+          0,
+          0.05,
+          0.05,
+          0,
+          0,
+          0.5
+        ],
+        "summary": "Progressive disclosure.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/agent/skill_commands.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "curator": {
+        "title": "agent/curator.py",
+        "kind": "subsystem",
+        "section": [
+          0.692,
+          0.077,
+          0,
+          0,
+          0,
+          0.769,
+          0.077,
+          0,
+          1,
+          0,
+          0.077,
+          0
+        ],
+        "summary": "Closed learning loop.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/agent/curator.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "toolsets": {
+        "kind": "subsystem",
+        "section": [
+          0.014,
+          0,
+          1,
+          0,
+          0.014,
+          0,
+          0.014,
+          0.014,
+          0,
+          0.101,
+          0.174,
+          0.101
+        ],
+        "summary": "Named toolsets.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/toolsets.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "hermes-state-search": {
+        "kind": "subsystem",
+        "section": [
+          0,
+          0.008,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0.008,
+          0.008,
+          0.016,
+          0,
+          0
+        ],
+        "summary": "FTS5 reader.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/hermes_state_search.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "plugin-manager": {
+        "title": "hermes_cli/plugins.py",
+        "kind": "subsystem",
+        "section": [
+          0.011,
+          0.195,
+          0.08,
+          0.034,
+          0.057,
+          0.046,
+          0.023,
+          0.023,
+          0.184,
+          0.011,
+          0.437,
+          1
+        ],
+        "summary": "Plugin discovery.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/hermes_cli/plugins.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "delegate-tool": {
+        "title": "tools/delegate_tool.py",
+        "kind": "subsystem",
+        "section": [
+          0.452,
+          0.119,
+          1,
+          0.19,
+          0.024,
+          0,
+          0.333,
+          0,
+          0,
+          0.167,
+          0.167,
+          0.31
+        ],
+        "summary": "Child AIAgent.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/tools/delegate_tool.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "hermes-cli": {
+        "title": "cli.py + hermes_cli/main.py",
+        "kind": "surface",
+        "level": 2,
+        "section": [
+          0.06,
+          0.121,
+          0.26,
+          0.179,
+          0.107,
+          0.112,
+          0.153,
+          0.048,
+          0.099,
+          0.119,
+          0.571,
+          1
+        ],
+        "summary": "Interactive CLI.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/cli.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "gateway-runner": {
+        "title": "gateway/run.py",
+        "kind": "surface",
+        "level": 2,
+        "section": [
+          0.272,
+          0.154,
+          0.034,
+          0.372,
+          0.07,
+          0.01,
+          0.027,
+          0.292,
+          0.124,
+          0.013,
+          0.195,
+          1
+        ],
+        "summary": "GatewayRunner.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/gateway/run.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "cron-scheduler": {
+        "title": "cron/",
+        "kind": "surface",
+        "level": 2,
+        "section": [
+          0.154,
+          0.06,
+          0.068,
+          0.171,
+          0.009,
+          0,
+          0.068,
+          0.077,
+          1,
+          0,
+          0.205,
+          0.282
+        ],
+        "summary": "Fresh AIAgent, no history.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/cron/scheduler.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "acp-server": {
+        "title": "acp_adapter/",
+        "kind": "surface",
+        "level": 2,
+        "section": [
+          0.081,
+          0.017,
+          0.02,
+          0.044,
+          0.007,
+          0.014,
+          0.007,
+          0.003,
+          0,
+          1,
+          0.078,
+          0.129
+        ],
+        "summary": "IDE ACP.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/tree/main/acp_adapter"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "mcp-serve": {
+        "kind": "surface",
+        "level": 2,
+        "section": [
+          0.001,
+          0.001,
+          0.013,
+          0.013,
+          0.006,
+          0,
+          0,
+          0,
+          0,
+          0.001,
+          1,
+          0.084
+        ],
+        "summary": "MCP server + client.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/mcp_serve.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "desktop-app": {
+        "title": "apps/desktop",
+        "kind": "surface",
+        "level": 2,
+        "section": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0.083,
+          0,
+          0,
+          1
+        ],
+        "summary": "Electron. Second-writer risk.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/tree/main/apps/desktop"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "batch-runner": {
+        "kind": "surface",
+        "level": 2,
+        "section": [
+          0.75,
+          1,
+          0.75,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "summary": "Trajectory dump path.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/batch_runner.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "platforms-messaging": {
+        "title": "gateway/platforms",
+        "kind": "adapter",
+        "level": 3,
+        "section": [
+          0.089,
+          0.031,
+          0.106,
+          0.086,
+          0.014,
+          0,
+          0.017,
+          0.322,
+          0.137,
+          0.007,
+          0.031,
+          1
+        ],
+        "summary": "Platform adapters.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/tree/main/gateway/platforms"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "backends-terminal": {
+        "title": "tools/environments",
+        "kind": "adapter",
+        "level": 3,
+        "section": [
+          0.037,
+          0.012,
+          0.037,
+          0.025,
+          0,
+          0,
+          0,
+          0.025,
+          0,
+          0.247,
+          0,
+          1
+        ],
+        "summary": "Terminal backends.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/tree/main/tools/environments"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "backends-browser": {
+        "title": "tools/browser_tool.py",
+        "kind": "adapter",
+        "level": 3,
+        "section": [
+          0,
+          0,
+          0.895,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0.053,
+          0.263,
+          1
+        ],
+        "summary": "Browser backends.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/tools/browser_tool.py"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "bundled-skills": {
+        "title": "skills/",
+        "kind": "adapter",
+        "level": 3,
+        "section": [
+          0.021,
+          0.219,
+          0.24,
+          0.021,
+          0,
+          0.302,
+          0,
+          0.021,
+          0.021,
+          0.031,
+          0.875,
+          1
+        ],
+        "summary": "Bundled SKILL.md packs.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/tree/main/skills"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "optional-skills": {
+        "title": "optional-skills/",
+        "kind": "adapter",
+        "level": 3,
+        "section": [
+          0.003,
+          0.401,
+          0.231,
+          0.003,
+          0.236,
+          0.126,
+          0.025,
+          0,
+          0.239,
+          0.005,
+          1,
+          0.365
+        ],
+        "summary": "Install-gated. Mixed family.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/tree/main/optional-skills"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "plugins-memory": {
+        "title": "plugins/memory",
+        "kind": "adapter",
+        "level": 3,
+        "section": [
+          0.007,
+          0.036,
+          0,
+          0.046,
+          1,
+          0,
+          0,
+          0.002,
+          0,
+          0.002,
+          0.002,
+          0.198
+        ],
+        "summary": "Honcho/Mem0. Memory-dominant.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/tree/main/plugins/memory"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "plugins-model-providers": {
+        "title": "plugins/model-providers",
+        "kind": "adapter",
+        "level": 3,
+        "section": [
+          0.027,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0.324,
+          0,
+          0.054
+        ],
+        "summary": "Extra providers.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/tree/main/plugins/model-providers"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      },
+      "docs-site": {
+        "title": "website/docs + AGENTS.md",
+        "kind": "adapter",
+        "level": 3,
+        "section": [
+          0.127,
+          0.451,
+          0.244,
+          0.076,
+          0.274,
+          0.657,
+          0.089,
+          0.027,
+          0.113,
+          0.239,
+          1,
+          0.664
+        ],
+        "summary": "Docs. Not the loop.",
+        "sources": [
+          "https://github.com/NousResearch/hermes-agent/blob/main/AGENTS.md"
+        ],
+        "_generated": [
+          "x",
+          "z"
+        ]
+      }
+    },
+    "restrictions": {
+      "e0": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "hermes-cli\trun-agent\t0": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e1": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "gateway-runner\trun-agent\t1": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e2": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "cron-scheduler\trun-agent\t2": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e3": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "acp-server\trun-agent\t3": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e4": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "batch-runner\trun-agent\t4": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e5": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "conversation-loop\trun-agent\t5": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e6": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "prompt-builder\trun-agent\t6": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e7": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "prompt-caching\tprompt-builder\t7": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e8": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "context-compressor\tprompt-builder\t8": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e9": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "memory-manager\tsession-db\t9": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e10": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "skill-commands\tprompt-builder\t10": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e11": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "curator\tskill-commands\t11": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e12": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "toolsets\ttool-registry\t12": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e13": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "hermes-state-search\tsession-db\t13": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e14": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "plugin-manager\ttool-registry\t14": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e15": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "delegate-tool\trun-agent\t15": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e16": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "mcp-serve\ttool-registry\t16": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e17": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "platforms-messaging\tgateway-runner\t17": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e18": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "backends-terminal\ttool-registry\t18": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e19": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "backends-browser\ttool-registry\t19": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e20": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "bundled-skills\tskill-commands\t20": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e21": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "docs-site\trun-agent\t21": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e22": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "runtime-provider\trun-agent\t22": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e23": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "profile-isolation\trun-agent\t23": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e24": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "optional-skills\tprompt-builder\t24": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e25": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "plugins-memory\tsession-db\t25": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e26": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "desktop-app\tsession-db\t26": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e27": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "cron-scheduler\tsession-db\t27": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "e28": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      },
+      "mcp-serve\tprofile-isolation\t28": {
+        "usePredicate": false,
+        "_generated": [
+          "id",
+          "residual"
+        ],
+        "defaultStatus": true
+      }
+    },
+    "levels": [
+      {
+        "id": 0,
+        "code": "L0",
+        "label": "Runtime waist",
+        "kicker": "Pinned",
+        "blurb": "run_agent.py, prompt_builder.py, tools/registry.py, hermes_state.py, runtime_provider.py, approval.py."
+      },
+      {
+        "id": 1,
+        "code": "L1",
+        "label": "Subsystems",
+        "kicker": "agent/ + state + tools",
+        "blurb": "Modules that implement the loop."
+      },
+      {
+        "id": 2,
+        "code": "L2",
+        "label": "Surfaces",
+        "kicker": "Entry points",
+        "blurb": "CLI, gateway, ACP, MCP, cron, desktop, batch."
+      },
+      {
+        "id": 3,
+        "code": "L3",
+        "label": "Adapters and docs",
+        "kicker": "Pools",
+        "blurb": "Platforms, backends, skills, plugins, docs."
+      }
+    ],
+    "$schema": "../../schemas/sheaf-graph.schema.json",
+    "kicker": "Scored from the cloned tree + docs",
+    "blurb": "Hermes-only walker. Scanned 2423 py/md files. Separate from langchainjs.",
+    "residualMeaning": "A terracotta edge is a harness gluing failure against the pinned AIAgent + tool-registry + SessionDB + prompt-tier contract.",
+    "eval": {
+      "files": 2423,
+      "dim": 12,
+      "walker": "scripts/sheaf/from-hermes.mjs",
+      "segments": {
+        "nodes": 31,
+        "edges": 29
+      },
+      "note": "Family-regex digest. Never from-code.mjs."
+    }
+  }
+}
