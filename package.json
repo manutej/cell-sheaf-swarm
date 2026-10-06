@@ -15,7 +15,7 @@
     "sheaf:bridge": "node scripts/sheaf-bridge.mjs",
     "federation:run": "node scripts/run-federated-loop.mjs",
     "pulse:run": "node scripts/pulse-run.mjs",
-    "test": "node --test scripts/validate-sheaf.test.mjs scripts/sheaf-bridge.test.mjs scripts/federated-loop.test.mjs scripts/pulse-run.test.mjs scripts/worker-adapter.test.mjs scripts/eval-harness.test.mjs scripts/operad-q0-check.test.mjs scripts/pulse-contract.test.mjs scripts/tape.test.mjs scripts/insight-headline.test.mjs",
+    "test": "node --test scripts/validate-sheaf.test.mjs scripts/sheaf-bridge.test.mjs scripts/federated-loop.test.mjs scripts/pulse-run.test.mjs scripts/worker-adapter.test.mjs scripts/eval-harness.test.mjs scripts/operad-q0-check.test.mjs scripts/pulse-contract.test.mjs scripts/tape.test.mjs scripts/insight-headline.test.mjs scripts/load-sheaf-provenance.test.mjs",
     "q0:check": "node scripts/operad-q0-check.mjs contracts/*.sheaf.json",
     "observatory:dev": "npm run dev --prefix observatory",
     "observatory:build": "npm run build --prefix observatory"

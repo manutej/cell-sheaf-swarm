@@ -1,4 +1,4 @@
-import { SCHEMA_ID, SheafGraph, type Agent, type Commit, type SheafGraph as Graph } from "./types";
+import { SCHEMA_ID, SheafGraph, type Agent, type Commit, type SheafGraph as Graph } from "./types.ts";
 
 export type ParseOk = { ok: true; graph: Graph; warnings: string[] };
 export type ParseFail = { ok: false; error: string; issues: string[] };
@@ -78,6 +78,32 @@ export function rollIssues(g: Graph): string[] {
   return issues;
 }
 
+type ProvenanceMeta = {
+  xSas?: unknown;
+  commitsAbsent: boolean;
+};
+
+/** Signals for bridge imports that Zod strips or normalizeSheaf overwrites. */
+function provenanceFromRaw(raw: unknown): ProvenanceMeta {
+  if (raw === null || typeof raw !== "object" || Array.isArray(raw)) {
+    return { commitsAbsent: false };
+  }
+  const o = raw as Record<string, unknown>;
+  const meta: ProvenanceMeta = { commitsAbsent: !("commits" in o) };
+  if ("x-sas" in o) meta.xSas = o["x-sas"];
+  return meta;
+}
+
+function withProvenance(graph: Graph, meta: ProvenanceMeta): Graph {
+  const out = { ...graph } as Graph & { "x-sas"?: unknown };
+  if (meta.xSas !== undefined) out["x-sas"] = meta.xSas;
+  if (meta.commitsAbsent) {
+    const { commits: _commits, ...rest } = out as Graph & { commits?: Commit[] };
+    return rest as Graph;
+  }
+  return out;
+}
+
 export function normalizeSheaf(g: Graph): Graph {
   return {
     ...g,
@@ -99,12 +125,13 @@ export function normalizeSheaf(g: Graph): Graph {
 }
 
 export function tryParseSheaf(raw: unknown): ParseResult {
+  const provenance = provenanceFromRaw(raw);
   const parsed = SheafGraph.safeParse(raw);
   if (!parsed.success) {
     const issues = parsed.error.issues.map((i) => `${i.path.join(".") || "graph"}: ${i.message}`);
     return { ok: false, error: issues[0] ?? "invalid sheaf", issues };
   }
-  const graph = normalizeSheaf(parsed.data);
+  const graph = withProvenance(normalizeSheaf(parsed.data), provenance);
   const extra = rollIssues(graph);
   if (extra.length) {
     return { ok: false, error: extra[0], issues: extra };
