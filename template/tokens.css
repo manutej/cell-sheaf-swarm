@@ -17,7 +17,7 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; background: var(--paper); color: var(--ink); font-family: var(--sans); }
-.stage { height: 100%; display: grid; grid-template-rows: auto auto 1fr auto; }
+.stage { height: 100%; display: grid; grid-template-rows: auto auto auto 1fr auto; }
 header, footer { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; }
 header { padding: 8px 12px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
 footer { padding: 8px 12px; border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); font-size: 0.7rem; opacity: 0.78; }
