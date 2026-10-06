@@ -108,7 +108,7 @@ Checks and tests read the files under `examples/`. From the repo root:
 node scripts/sheaf-bridge.mjs to-swarm ../stalks-and-sections/docs/examples/hermes-agent.json > examples/bridge/hermes-agent.swarm.json
 node scripts/sheaf-bridge.mjs to-sas contracts/paper.sheaf.json > examples/bridge/paper.sas.json
 
-npm run episode -- contracts/paper.sheaf.json > examples/episodes/paper.verdict.js
+npm run -s episode -- contracts/paper.sheaf.json > examples/episodes/paper.verdict.js
 
 # q0-live snapshots (seed 1)
 SHEAF_PULSE_SEED=1 npx tsx scripts/pulse-contract.ts --graph contracts/paper.sheaf.json --ticks 5 --out examples/q0-live/paper-t5.sheaf.json --state-out examples/q0-live/paper-t5.state.json
