@@ -29,6 +29,9 @@ export type Repair = Blocker & {
   missing: boolean;
 };
 
+export const UNVERIFIED_BANNER =
+  "Unverified topology from computed wiring links—not a verified sheaf contradiction.";
+
 /** Bridge-imported graphs carry x-sas; authored ones have commits[] and no x- keys. */
 export function importedGraph(graph: SheafGraph): boolean {
   const g = graph as SheafGraph & { "x-sas"?: unknown };
@@ -157,4 +160,10 @@ export function verdict(graph: SheafGraph): string {
   if (best.closesTrunk) return `Fix ${best.from} → ${best.to} and the trunk closes.`;
   const still = n - open - best.opens.length;
   return `Fix ${best.from} → ${best.to} and ${best.opens.join(", ")} may fold. ${still} still closed.`;
+}
+
+export function bannerText(graph: SheafGraph): string | null {
+  if (!importedGraph(graph)) return null;
+  if (graph.restrictions.some((r) => r.status === "ok")) return null;
+  return UNVERIFIED_BANNER;
 }

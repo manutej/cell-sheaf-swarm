@@ -6,6 +6,7 @@
 import { readFileSync } from "node:fs";
 import { basename } from "node:path";
 import {
+  bannerText,
   folderOf,
   focusLine,
   repairLabel,
@@ -22,7 +23,7 @@ function slugFromGraph(g) {
 
 function buildData(graph) {
   const top = repairs(graph).slice(0, 3);
-  return {
+  const data = {
     title: graph.title || graph.id,
     pillars: graph.pillars.map((p) => ({ id: p.id, folder: p.folder })),
     maps: graph.restrictions.map((r) => ({
@@ -39,6 +40,9 @@ function buildData(graph) {
       line: focusLine(graph, f.id),
     })),
   };
+  const banner = bannerText(graph);
+  if (banner !== null) data.banner = banner;
+  return data;
 }
 
 function beatPlan(data) {
@@ -264,6 +268,12 @@ ${dataLine}
       "letter-spacing": "0.16em", fill: DIM, text: "VERDICT" }, D.sVerdict);
     D.verdictText = el("text", { x: 60, y: 62, "font-size": 16, fill: INK, text: DATA.verdict }, D.sVerdict);
     fit(D.verdictText, VW - 120);
+    if (DATA.banner) {
+      D.bannerText = el("text", {
+        x: 60, y: 96, "font-size": 12, fill: DIM, text: DATA.banner,
+      }, D.sVerdict);
+      fit(D.bannerText, VW - 120);
+    }
     setO(D.sVerdict, 0);
 
     D.sWhy = g(D.detailLayer);
