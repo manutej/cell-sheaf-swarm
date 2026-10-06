@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
+  existsSync,
   readFileSync,
   writeFileSync,
   mkdtempSync,
@@ -20,6 +21,10 @@ const SAS_ROOT = process.env.SAS_ROOT
   : resolve(ROOT, "../stalks-and-sections");
 const HERMES = join(SAS_ROOT, "docs/examples/hermes-agent.json");
 const PAPER = join(ROOT, "contracts/paper.sheaf.json");
+const SAS_VALIDATE = join(SAS_ROOT, "scripts/sheaf/validate.mjs");
+const sasRoundTripSkip = existsSync(SAS_VALIDATE)
+  ? false
+  : `needs a stalks-and-sections checkout at ${SAS_ROOT} (set SAS_ROOT)`;
 
 function validateSas(path) {
   execFileSync("node", [join(SAS_ROOT, "scripts/sheaf/validate.mjs"), path], {
@@ -28,7 +33,7 @@ function validateSas(path) {
   });
 }
 
-test("paper.sheaf.json round-trips through SAS", () => {
+test("paper.sheaf.json round-trips through SAS", { skip: sasRoundTripSkip }, () => {
   const paper = JSON.parse(readFileSync(PAPER, "utf8"));
   const sas = toSas(paper);
   validateSasFromObject(sas, "paper.sas.tmp.json");
@@ -39,7 +44,7 @@ test("paper.sheaf.json round-trips through SAS", () => {
   assert.equal(sas.edges.length, 8);
 });
 
-test("hermes-agent.json round-trips through swarm", () => {
+test("hermes-agent.json round-trips through swarm", { skip: sasRoundTripSkip }, () => {
   const hermes = JSON.parse(readFileSync(HERMES, "utf8"));
   const swarm = toSwarm(hermes);
   assert.equal(swarm.pillars.length, 31);
@@ -126,7 +131,7 @@ test("CLI exits 2 on unknown subcommand", () => {
   );
 });
 
-test("relation edits survive conversion", () => {
+test("relation edits survive conversion", { skip: sasRoundTripSkip }, () => {
   const hermes = JSON.parse(readFileSync(HERMES, "utf8"));
   hermes.edges[0] = { ...hermes.edges[0], relation: "edited_once" };
   const swarm = toSwarm(hermes);
