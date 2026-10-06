@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import {
+  readFileSync,
+  writeFileSync,
+  mkdtempSync,
+  rmSync,
+  symlinkSync,
+} from "node:fs";
+import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
@@ -9,7 +15,9 @@ import { deepEqualSorted, toSas, toSwarm } from "./sheaf-bridge.mjs";
 import { rollIssues } from "./validate-sheaf.mjs";
 
 const ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "..");
-const SAS_ROOT = "/Users/cairo/rig-work/glue/repos/stalks-and-sections";
+const SAS_ROOT = process.env.SAS_ROOT
+  ? resolve(process.env.SAS_ROOT)
+  : resolve(ROOT, "../stalks-and-sections");
 const HERMES = join(SAS_ROOT, "docs/examples/hermes-agent.json");
 const PAPER = join(ROOT, "contracts/paper.sheaf.json");
 
@@ -89,6 +97,33 @@ test("inline SAS → swarm with predicate and triples", () => {
   assert.ok(Array.isArray(back.triples));
   assert.equal(back.triples[0].predicate, "relates");
   assert.ok(deepEqualSorted(sas2, back));
+});
+
+test("CLI runs when invoked through a symlinked script path", () => {
+  const dir = mkdtempSync(join(tmpdir(), "sheaf-bridge-cli-"));
+  const script = join(ROOT, "scripts/sheaf-bridge.mjs");
+  const link = join(dir, "sheaf-bridge.mjs");
+  symlinkSync(script, link);
+  const out = execFileSync(
+    "node",
+    [link, "to-sas", PAPER],
+    { encoding: "utf8" },
+  );
+  const parsed = JSON.parse(out);
+  assert.equal(parsed.nodes.length, 6);
+  assert.equal(parsed.edges.length, 8);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("CLI exits 2 on unknown subcommand", () => {
+  assert.throws(
+    () =>
+      execFileSync("node", [join(ROOT, "scripts/sheaf-bridge.mjs"), "nope", PAPER], {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+      }),
+    (err) => err.status === 2,
+  );
 });
 
 test("relation edits survive conversion", () => {

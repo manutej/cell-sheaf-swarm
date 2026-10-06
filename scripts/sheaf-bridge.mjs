@@ -2,7 +2,7 @@
 /**
  * Bidirectional SheafGraph bridge: cell-sheaf-swarm (pillars/restrictions) ↔ stalks-and-sections (nodes/edges).
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { rollIssues } from "./validate-sheaf.mjs";
 
@@ -338,5 +338,15 @@ function main() {
   process.stdout.write(`${JSON.stringify(out, null, 2)}\n`);
 }
 
-const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
-if (isMain) main();
+function isMainModule() {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    return (
+      realpathSync(fileURLToPath(import.meta.url)) === realpathSync(entry)
+    );
+  } catch {
+    return false;
+  }
+}
+if (isMainModule()) main();
