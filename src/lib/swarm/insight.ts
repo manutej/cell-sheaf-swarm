@@ -25,7 +25,27 @@ export type Blocker = {
 export type Repair = Blocker & {
   opens: string[];
   closesTrunk: boolean;
+  unverified: boolean;
+  missing: boolean;
 };
+
+/** Bridge-imported graphs carry x-sas; authored ones have commits[] and no x- keys. */
+export function importedGraph(graph: SheafGraph): boolean {
+  const g = graph as SheafGraph & { "x-sas"?: unknown };
+  return Boolean(g["x-sas"]) || !Array.isArray(g.commits);
+}
+
+function edgeUnverified(graph: SheafGraph, b: Blocker): boolean {
+  if (!importedGraph(graph)) return false;
+  return b.status === "strange" || b.status === "broken";
+}
+
+function edgeDangling(graph: SheafGraph, b: Blocker): boolean {
+  if (b.status !== "broken") return false;
+  if (b.target.startsWith("missing:")) return true;
+  const pillar = graph.pillars.find((p) => p.id === b.target);
+  return pillar?.known === false;
+}
 
 export function folderOf(graph: SheafGraph, id: string): string {
   return graph.pillars.find((p) => p.id === id)?.folder ?? id;
@@ -74,7 +94,13 @@ export function repairs(graph: SheafGraph): Repair[] {
       const after = openIds(graph, b.id);
       const opens = graph.pillars.filter((p) => !before.has(p.id) && after.has(p.id)).map((p) => p.folder);
       const closesTrunk = graph.pillars.every((p) => after.has(p.id));
-      return { ...b, opens, closesTrunk };
+      return {
+        ...b,
+        opens,
+        closesTrunk,
+        unverified: edgeUnverified(graph, b),
+        missing: edgeDangling(graph, b),
+      };
     })
     .sort((a, b) => {
       if (a.closesTrunk !== b.closesTrunk) return a.closesTrunk ? -1 : 1;
@@ -84,6 +110,8 @@ export function repairs(graph: SheafGraph): Repair[] {
 }
 
 export function repairLabel(fix: Repair): string {
+  if (fix.unverified && fix.missing) return `${fix.from} → ${fix.to} · link to missing page`;
+  if (fix.unverified) return `${fix.from} → ${fix.to} · check`;
   if (fix.closesTrunk) return `${fix.from} → ${fix.to} · closes the trunk`;
   if (fix.opens.length) return `${fix.from} → ${fix.to} · opens ${fix.opens.join(", ")}`;
   return `${fix.from} → ${fix.to} · opens nothing`;
@@ -123,6 +151,8 @@ export function verdict(graph: SheafGraph): string {
   const n = graph.pillars.length;
   if (!fixes.length) return `Every map commutes. ${open} folders may fold.`;
   const best = fixes[0];
+  if (best.unverified && best.missing) return `Link to missing page ${best.from} → ${best.to}.`;
+  if (best.unverified) return `Check ${best.from} → ${best.to}. Unverified link.`;
   if (!best.opens.length) return `${open} of ${n} may fold. No single fix opens a new folder.`;
   if (best.closesTrunk) return `Fix ${best.from} → ${best.to} and the trunk closes.`;
   const still = n - open - best.opens.length;
